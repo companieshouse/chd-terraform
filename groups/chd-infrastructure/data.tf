@@ -92,7 +92,7 @@ data "template_file" "bep_userdata" {
 #    CHD_BACKEND_INPUTS = local.chd_bep_data
     CHD_BACKEND_INPUTS = ""
     ANSIBLE_INPUTS     = jsonencode(local.chd_bep_ansible_inputs)
-    CHD_CRON_ENTRIES   = var.account == "hlive" ? "#No Entries" : templatefile("${path.module}/templates/bep_cron.tpl", { "USER" = "", "PASSWORD" = "" })
+    CHD_CRON_ENTRIES   = templatefile("${path.module}/templates/bep_cron.tpl", { "USER" = "", "PASSWORD" = "" })
   }
 }
 
