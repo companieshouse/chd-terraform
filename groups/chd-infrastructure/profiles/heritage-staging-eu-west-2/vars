@@ -15,9 +15,9 @@ environment = "staging"
 application = "chd"
 
 bep_instance_size = "t2.medium"
-bep_min_size = 0
-bep_max_size = 0
-bep_desired_capacity = 0
+bep_min_size = 1
+bep_max_size = 1
+bep_desired_capacity = 1
 bep_schedule_stop = true
 bep_schedule_start = true
 
