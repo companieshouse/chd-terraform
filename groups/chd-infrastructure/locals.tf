@@ -15,7 +15,7 @@ locals {
 # ------------------------------------------------------------------------------
 # CHD BEP
 # ------------------------------------------------------------------------------
-#  chd_bep_data = data.vault_generic_secret.chd_bep_data.data_json
+  chd_bep_data = data.vault_generic_secret.chd_bep_data.data_json
   chd_ec2_data = data.vault_generic_secret.chd_ec2_data.data
   s3_releases  = data.vault_generic_secret.s3_releases.data
 
