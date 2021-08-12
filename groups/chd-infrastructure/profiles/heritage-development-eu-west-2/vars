@@ -52,3 +52,21 @@ bep_cw_logs = {
     log_group_retention = 7
   }
 }
+
+# CVO Mounts
+nfs_server = "10.104.9.145"
+nfs_mount_destination_parent_dir = "/mnt/nfs/chd3"
+nfs_mounts = {
+  chd3_image = {
+    local_mount_point = "image"
+  },
+  chd3_online = {
+    local_mount_point = "online"
+  },
+  chd3_fax = {
+    local_mount_point = "fax"
+  },
+  chd3_post = {
+    local_mount_point = "post"
+  }
+}
