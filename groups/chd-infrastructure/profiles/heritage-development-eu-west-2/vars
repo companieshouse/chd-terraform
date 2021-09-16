@@ -53,10 +53,11 @@ bep_cw_logs = {
   }
 }
 
-# CVO Mounts
+# NFS Configuration
 nfs_server = "10.104.9.145"
 nfs_mount_destination_parent_dir = "/mnt/nfs/chd3"
 nfs_mounts = {
+  # CVO Mounts
   chd3_image = {
     local_mount_point = "image"
   },
