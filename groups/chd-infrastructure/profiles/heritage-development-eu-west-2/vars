@@ -55,19 +55,16 @@ bep_cw_logs = {
 
 # NFS Configuration
 nfs_server = "10.104.9.145"
-nfs_mount_destination_parent_dir = "/mnt/nfs/chd3"
+nfs_mount_destination_parent_dir = "/-"
 nfs_mounts = {
   # CVO Mounts
   chd3_image = {
-    local_mount_point = "image"
+    local_mount_point = "/mnt/nfs/chd/image"
   },
   chd3_online = {
-    local_mount_point = "online"
-  },
-  chd3_fax = {
-    local_mount_point = "fax"
+    local_mount_point = "/mnt/nfs/chd/online"
   },
   chd3_post = {
-    local_mount_point = "post"
+    local_mount_point = "/mnt/nfs/chd/post"
   }
 }
