@@ -57,6 +57,16 @@ bep_cw_logs = {
 nfs_server = "192.168.255.19"
 nfs_mount_destination_parent_dir = "/-"
 nfs_mounts = {
+  # CVO Mounts
+  chd_image = {
+    local_mount_point = "/mnt/nfs/chd/image"
+  },
+  chd_online = {
+    local_mount_point = "/mnt/nfs/chd/online"
+  },
+  chd_post = {
+    local_mount_point = "/mnt/nfs/chd/post"
+  },
   # Onsite Mounts
   chd_image_onp = {
     local_mount_point = "/mnt/nfs/onsite/chd/image"
