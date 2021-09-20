@@ -87,10 +87,11 @@ data "template_file" "bep_userdata" {
   template = file("${path.module}/templates/bep_user_data.tpl")
 
   vars = {
-    REGION             = var.aws_region
-    CHD_BACKEND_INPUTS = local.chd_bep_data
-    ANSIBLE_INPUTS     = jsonencode(local.chd_bep_ansible_inputs)
-    CHD_CRON_ENTRIES   = templatefile("${path.module}/templates/bep_cron.tpl", { "USER" = "", "PASSWORD" = "" })
+    REGION               = var.aws_region
+    HERITAGE_ENVIRONMENT = title(var.environment)
+    CHD_BACKEND_INPUTS   = local.chd_bep_data
+    ANSIBLE_INPUTS       = jsonencode(local.chd_bep_ansible_inputs)
+    CHD_CRON_ENTRIES     = templatefile("${path.module}/templates/bep_cron.tpl", { "USER" = "", "PASSWORD" = "" })
   }
 }
 
