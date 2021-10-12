@@ -91,7 +91,7 @@ data "template_file" "bep_userdata" {
     HERITAGE_ENVIRONMENT = title(var.environment)
     CHD_BACKEND_INPUTS   = local.chd_bep_data
     ANSIBLE_INPUTS       = jsonencode(local.chd_bep_ansible_inputs)
-    CHD_CRON_ENTRIES     = templatefile("${path.module}/templates/${var.aws_profile}/bep_cron.tpl")
+    CHD_CRON_ENTRIES     = templatefile("${path.module}/templates/${var.aws_profile}/bep_cron.tpl", {})
   }
 }
 
