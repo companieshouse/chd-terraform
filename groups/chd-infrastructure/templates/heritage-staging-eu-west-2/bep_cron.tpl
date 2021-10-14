@@ -39,4 +39,4 @@
 #MARK*/1 7-23 * * * /home/chd/chd3backend/internal.sh
 
 # WEEDING
-*/5 7-23 * * * /home/chd/chd3backend/weedall.sh
+*/5 7-23 * * * /home/chd/chd3backend/weedall.sh chd3
