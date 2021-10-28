@@ -9,6 +9,23 @@ module "chd_bep_asg_security_group" {
   description = "Security group for the ${var.application} backend asg"
   vpc_id      = data.aws_vpc.vpc.id
 
+  ingress_with_cidr_blocks = [
+    {
+      from_port   = 631
+      to_port     = 631
+      protocol    = "tcp"
+      description = "CUPS UI Access"
+      cidr_blocks = join(",", local.admin_cidrs)
+    },
+    {
+      from_port   = 631
+      to_port     = 631
+      protocol    = "tcp"
+      description = "Allow health check requests from network load balancer"
+      cidr_blocks = join(",", formatlist("%s/32", [for eni in data.aws_network_interface.nlb : eni.private_ip]))
+    },
+  ]
+
   egress_rules = ["all-all"]
 
   tags = merge(
@@ -82,7 +99,7 @@ module "bep_asg" {
   # Auto scaling group
   asg_name                       = "${var.application}-bep-asg"
   vpc_zone_identifier            = data.aws_subnet_ids.application.ids
-  health_check_type              = "EC2"
+  health_check_type              = "ELB"
   min_size                       = var.bep_min_size
   max_size                       = var.bep_max_size
   desired_capacity               = var.bep_desired_capacity
@@ -93,6 +110,7 @@ module "bep_asg" {
   refresh_min_healthy_percentage = 50
   refresh_triggers               = ["launch_configuration"]
   key_name                       = aws_key_pair.chd_keypair.key_name
+  target_group_arns              = module.backend_nlb.target_group_arns
   termination_policies           = ["OldestLaunchConfiguration"]
   iam_instance_profile           = module.chd_bep_profile.aws_iam_instance_profile.name
   user_data_base64               = data.template_cloudinit_config.bep_userdata_config.rendered
