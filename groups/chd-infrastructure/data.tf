@@ -21,6 +21,11 @@ data "vault_generic_secret" "internal_cidrs" {
 # ------------------------------------------------------------------------------
 data "aws_caller_identity" "current" {}
 
+data "aws_route53_zone" "private_zone" {
+  name         = local.internal_fqdn
+  private_zone = true
+}
+
 data "aws_subnet_ids" "application" {
   vpc_id = data.aws_vpc.vpc.id
   filter {
