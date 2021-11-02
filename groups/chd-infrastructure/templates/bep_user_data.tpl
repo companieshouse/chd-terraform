@@ -11,6 +11,8 @@ cat <<EOF >>/root/cronfile
 ${CHD_CRON_ENTRIES}
 EOF
 crontab -u chd /root/cronfile
+#Set DATABASE environment variable
+echo "export DATABASE=ORACLE" >> /home/chd/.bash_profile
 #Update Nagios registration script with relevant template
 cp /usr/local/bin/nagios-host-add.sh /usr/local/bin/nagios-host-add.j2
 REPLACE=CHD_BEP_${HERITAGE_ENVIRONMENT} /usr/local/bin/j2 /usr/local/bin/nagios-host-add.j2 > /usr/local/bin/nagios-host-add.sh
