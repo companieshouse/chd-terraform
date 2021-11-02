@@ -34,7 +34,7 @@
 # DO NOT run these unless there is a problem on chdtux1
 # Process monitor Matches/renewals and send out emails etc
 #30 9 * * *  /home/chd/chd3backend/monitorMatch.sh
-#30 11 * * *  /bin/grep "Monitor emails" /backend.log > /tmp/monConf.txt
+#30 11 * * *  /bin/grep "Monitor emails" $HOME/backend.log > /tmp/monConf.txt
 # ----------------------------------------------------------------------
 
 # ----------------------------------------------------------------------
