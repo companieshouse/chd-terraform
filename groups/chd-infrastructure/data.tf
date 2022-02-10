@@ -17,7 +17,7 @@ data "vault_generic_secret" "internal_cidrs" {
 }
 
 # ------------------------------------------------------------------------------
-# CHD BEP Data
+# CHD Common Data
 # ------------------------------------------------------------------------------
 data "aws_caller_identity" "current" {}
 
@@ -65,6 +65,56 @@ data "vault_generic_secret" "chd_ec2_data" {
   path = "applications/${var.aws_account}-${var.aws_region}/${var.application}/ec2"
 }
 
+# ------------------------------------------------------------------------------
+# CHD Frontend Data
+# ------------------------------------------------------------------------------
+data "vault_generic_secret" "chd_fe_data" {
+  path = "applications/${var.aws_account}-${var.aws_region}/${var.application}/frontend"
+}
+
+data "aws_ami" "chd_fe" {
+  owners      = [data.vault_generic_secret.account_ids.data["development"]]
+  most_recent = var.ami_name == "chd-*" ? true : false
+
+  filter {
+    name = "name"
+    values = [
+      var.ami_name,
+    ]
+  }
+
+  filter {
+    name = "state"
+    values = [
+      "available",
+    ]
+  }
+}
+
+data "template_file" "fe_userdata" {
+  template = file("${path.module}/templates/fe_user_data.tpl")
+
+  vars = {
+    REGION               = var.aws_region
+    HERITAGE_ENVIRONMENT = title(var.environment)
+    CHD_FRONTEND_INPUTS   = local.chd_fe_data
+    ANSIBLE_INPUTS       = jsonencode(local.chd_fe_ansible_inputs)
+  }
+}
+
+data "template_cloudinit_config" "fe_userdata_config" {
+  gzip          = true
+  base64_encode = true
+
+  part {
+    content_type = "text/x-shellscript"
+    content      = data.template_file.fe_userdata.rendered
+  }
+}
+
+# ------------------------------------------------------------------------------
+# CHD BEP Data
+# ------------------------------------------------------------------------------
 data "vault_generic_secret" "chd_bep_data" {
   path = "applications/${var.aws_account}-${var.aws_region}/${var.application}/backend"
 }
