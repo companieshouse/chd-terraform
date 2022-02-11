@@ -53,7 +53,7 @@ resource "aws_cloudwatch_log_group" "chd_bep" {
 
 # ASG Scheduled Shutdown
 resource "aws_autoscaling_schedule" "bep-schedule-stop" {
-  count = var.bep_schedule_stop ? 1 : 0
+  count = var.bep_asg_schedule_stop ? 1 : 0
 
   scheduled_action_name  = "${var.aws_account}-${var.application}-bep-scheduled-shutdown"
   min_size               = 0
@@ -65,12 +65,12 @@ resource "aws_autoscaling_schedule" "bep-schedule-stop" {
 
 # ASG Scheduled Startup
 resource "aws_autoscaling_schedule" "bep-schedule-start" {
-  count = var.bep_schedule_start ? 1 : 0
+  count = var.bep_asg_schedule_start ? 1 : 0
 
   scheduled_action_name  = "${var.aws_account}-${var.application}-bep-scheduled-startup"
-  min_size               = var.bep_min_size
-  max_size               = var.bep_max_size
-  desired_capacity       = var.bep_desired_capacity
+  min_size               = var.bep_asg_min_size
+  max_size               = var.bep_asg_max_size
+  desired_capacity       = var.bep_asg_desired_capacity
   recurrence             = "00 06 * * 1-5" #Mon-Fri at 6am
   autoscaling_group_name = module.bep_asg.this_autoscaling_group_name
 }
@@ -82,7 +82,7 @@ module "bep_asg" {
   name = "${var.application}-bep"
   # Launch configuration
   lc_name       = "${var.application}-bep-launchconfig"
-  image_id      = data.aws_ami.chd_bep.id
+  image_id      = data.aws_ami.chd_ami.id
   instance_type = var.bep_instance_size
   security_groups = [
     module.chd_bep_asg_security_group.this_security_group_id,
@@ -100,9 +100,9 @@ module "bep_asg" {
   asg_name                       = "${var.application}-bep-asg"
   vpc_zone_identifier            = data.aws_subnet_ids.application.ids
   health_check_type              = "ELB"
-  min_size                       = var.bep_min_size
-  max_size                       = var.bep_max_size
-  desired_capacity               = var.bep_desired_capacity
+  min_size                       = var.bep_asg_min_size
+  max_size                       = var.bep_asg_max_size
+  desired_capacity               = var.bep_asg_desired_capacity
   health_check_grace_period      = 300
   wait_for_capacity_timeout      = 0
   force_delete                   = true
