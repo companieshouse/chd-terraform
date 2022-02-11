@@ -1,6 +1,24 @@
+data "aws_caller_identity" "current" {}
+
 data "aws_vpc" "vpc" {
   tags = {
     Name = "vpc-${var.aws_account}"
+  }
+}
+
+data "aws_subnet_ids" "public" {
+  vpc_id = data.aws_vpc.vpc.id
+  filter {
+    name   = "tag:Name"
+    values = ["sub-public-*"]
+  }
+}
+
+data "aws_subnet_ids" "web" {
+  vpc_id = data.aws_vpc.vpc.id
+  filter {
+    name   = "tag:Name"
+    values = ["sub-web-*"]
   }
 }
 
@@ -10,20 +28,6 @@ data "aws_subnet_ids" "data" {
     name   = "tag:Name"
     values = ["sub-data-*"]
   }
-}
-
-data "vault_generic_secret" "internal_cidrs" {
-  path = "aws-accounts/network/internal_cidr_ranges"
-}
-
-# ------------------------------------------------------------------------------
-# CHD Common Data
-# ------------------------------------------------------------------------------
-data "aws_caller_identity" "current" {}
-
-data "aws_route53_zone" "private_zone" {
-  name         = local.internal_fqdn
-  private_zone = true
 }
 
 data "aws_subnet_ids" "application" {
@@ -41,12 +45,26 @@ data "aws_security_group" "nagios_shared" {
   }
 }
 
+data "aws_route53_zone" "private_zone" {
+  name         = local.internal_fqdn
+  private_zone = true
+}
+
+data "aws_acm_certificate" "acm_cert" {
+  domain      = var.fe_domain_name
+  most_recent = true
+}
+
 data "vault_generic_secret" "account_ids" {
   path = "aws-accounts/account-ids"
 }
 
 data "vault_generic_secret" "s3_releases" {
   path = "aws-accounts/shared-services/s3"
+}
+
+data "vault_generic_secret" "internal_cidrs" {
+  path = "aws-accounts/network/internal_cidr_ranges"
 }
 
 data "vault_generic_secret" "kms_keys" {
@@ -65,14 +83,7 @@ data "vault_generic_secret" "chd_ec2_data" {
   path = "applications/${var.aws_account}-${var.aws_region}/${var.application}/ec2"
 }
 
-# ------------------------------------------------------------------------------
-# CHD Frontend Data
-# ------------------------------------------------------------------------------
-data "vault_generic_secret" "chd_fe_data" {
-  path = "applications/${var.aws_account}-${var.aws_region}/${var.application}/frontend"
-}
-
-data "aws_ami" "chd_fe" {
+data "aws_ami" "chd_ami" {
   owners      = [data.vault_generic_secret.account_ids.data["development"]]
   most_recent = var.ami_name == "chd-*" ? true : false
 
@@ -91,13 +102,24 @@ data "aws_ami" "chd_fe" {
   }
 }
 
+# ------------------------------------------------------------------------------
+# CHD Frontend Data
+# ------------------------------------------------------------------------------
+data "aws_security_group" "identity_gateway" {
+  name  = "identity-gateway-instance"
+}
+
+data "vault_generic_secret" "chd_fe_data" {
+  path = "applications/${var.aws_account}-${var.aws_region}/${var.application}/frontend"
+}
+
 data "template_file" "fe_userdata" {
   template = file("${path.module}/templates/fe_user_data.tpl")
 
   vars = {
     REGION               = var.aws_region
     HERITAGE_ENVIRONMENT = title(var.environment)
-    CHD_FRONTEND_INPUTS   = local.chd_fe_data
+    CHD_FRONTEND_INPUTS  = local.chd_fe_data
     ANSIBLE_INPUTS       = jsonencode(local.chd_fe_ansible_inputs)
   }
 }
@@ -117,25 +139,6 @@ data "template_cloudinit_config" "fe_userdata_config" {
 # ------------------------------------------------------------------------------
 data "vault_generic_secret" "chd_bep_data" {
   path = "applications/${var.aws_account}-${var.aws_region}/${var.application}/backend"
-}
-
-data "aws_ami" "chd_bep" {
-  owners      = [data.vault_generic_secret.account_ids.data["development"]]
-  most_recent = var.bep_ami_name == "chd-backend-*" ? true : false
-
-  filter {
-    name = "name"
-    values = [
-      var.bep_ami_name,
-    ]
-  }
-
-  filter {
-    name = "state"
-    values = [
-      "available",
-    ]
-  }
 }
 
 data "template_file" "bep_userdata" {

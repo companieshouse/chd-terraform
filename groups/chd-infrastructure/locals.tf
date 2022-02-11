@@ -26,6 +26,9 @@ locals {
   security_s3_data            = data.vault_generic_secret.security_s3_buckets.data
   session_manager_bucket_name = local.security_s3_data["session-manager-bucket-name"]
 
+  elb_access_logs_bucket_name = local.security_s3_data["elb-access-logs-bucket-name"]
+  elb_access_logs_prefix      = "elb-access-logs"
+
 # ------------------------------------------------------------------------------
 # CHD Frontend
 # ------------------------------------------------------------------------------
@@ -34,14 +37,16 @@ locals {
   fe_cw_logs = { for log, map in var.fe_cw_logs : log => merge(map, { "log_group_name" = "${var.application}-fe-${log}" }) }
   fe_log_groups = compact([for log, map in local.fe_cw_logs : lookup(map, "log_group_name", "")])
 
-  chd_bep_ansible_inputs = {
+  fe_alb_app_access = var.fe_access_cidrs
+
+  chd_fe_ansible_inputs = {
     s3_bucket_releases         = local.s3_releases["release_bucket_name"]
     s3_bucket_configs          = local.s3_releases["config_bucket_name"]
     heritage_environment       = var.environment
     version                    = var.fe_app_release_version
     default_nfs_server_address = var.nfs_server
     mounts_parent_dir          = var.nfs_mount_destination_parent_dir
-    mounts                     = var.fe_nfs_mounts
+    mounts                     = var.nfs_mounts
     region                     = var.aws_region
     cw_log_files               = local.fe_cw_logs
     cw_agent_user              = "root"
