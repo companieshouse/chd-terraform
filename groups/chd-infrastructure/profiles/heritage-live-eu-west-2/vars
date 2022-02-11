@@ -15,9 +15,9 @@ environment = "live"
 application = "chd"
 
 bep_instance_size = "t2.medium"
-bep_min_size = 1
-bep_max_size = 1
-bep_desired_capacity = 1
+bep_asg_min_size = 1
+bep_asg_max_size = 1
+bep_asg_desired_capacity = 1
 
 bep_cw_logs = {
   "messages" = {
