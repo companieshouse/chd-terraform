@@ -37,7 +37,19 @@ locals {
   fe_cw_logs = { for log, map in var.fe_cw_logs : log => merge(map, { "log_group_name" = "${var.application}-fe-${log}" }) }
   fe_log_groups = compact([for log, map in local.fe_cw_logs : lookup(map, "log_group_name", "")])
 
-  fe_alb_app_access = var.fe_access_cidrs
+  fe_alb_app_access = length(var.fe_access_cidrs) != 0 ? [
+    {
+      rule        = "http-80-tcp"
+      description = "Application Access"
+      cidr_blocks = join(",", var.fe_access_cidrs)
+    },
+    {
+      rule        = "https-443-tcp"
+      description = "Application Access"
+      cidr_blocks = join(",", var.fe_access_cidrs)
+    }
+  ] : []
+
 
   chd_fe_ansible_inputs = {
     s3_bucket_releases         = local.s3_releases["release_bucket_name"]

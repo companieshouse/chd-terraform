@@ -12,18 +12,7 @@ module "chd_internal_alb_security_group" {
   ingress_cidr_blocks = local.admin_cidrs
   ingress_rules       = ["http-80-tcp", "https-443-tcp"]
 
-  ingress_with_cidr_blocks = [
-    {
-      rule        = "http-80-tcp"
-      description = "Application Access"
-      cidr_blocks = join(",", local.fe_alb_app_access)
-    },
-    {
-      rule        = "https-443-tcp"
-      description = "Application Access"
-      cidr_blocks = join(",", local.fe_alb_app_access)
-    }
-  ]
+  ingress_with_cidr_blocks = local.fe_alb_app_access
 
   ingress_with_source_security_group_id = [
     {
