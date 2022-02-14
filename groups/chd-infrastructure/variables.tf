@@ -39,12 +39,6 @@ variable "environment" {
 # ------------------------------------------------------------------------------
 # CHD Common Variables
 # ------------------------------------------------------------------------------
-variable "ami_name" {
-  type        = string
-  default     = "chd-*"
-  description = "Name of the AMI to use in the Auto Scaling configuration"
-}
-
 variable "application" {
   type        = string
   description = "The name of the application"
@@ -79,6 +73,12 @@ variable "nfs_mounts" {
 # ------------------------------------------------------------------------------
 # CHD BEP Variables
 # ------------------------------------------------------------------------------
+variable "bep_ami_name" {
+  type        = string
+  default     = "chd-*"
+  description = "Name of the AMI to use in the BEP Auto Scaling configuration"
+}
+
 variable "bep_app_release_version" {
   type        = string
   description = "Version of the application to download for deployment to backend server(s)"
@@ -131,6 +131,12 @@ variable "bep_cw_logs" {
 # ------------------------------------------------------------------------------
 # CHD FE Variables
 # ------------------------------------------------------------------------------
+variable "fe_ami_name" {
+  type        = string
+  default     = "chd-*"
+  description = "Name of the AMI to use in the Frontend Auto Scaling configuration"
+}
+
 variable "fe_domain_name" {
   type        = string
   description = "Domain name of the ACM certificate used for the external ALB"

@@ -83,14 +83,33 @@ data "vault_generic_secret" "chd_ec2_data" {
   path = "applications/${var.aws_account}-${var.aws_region}/${var.application}/ec2"
 }
 
-data "aws_ami" "chd_ami" {
+data "aws_ami" "chd_bep_ami" {
   owners      = [data.vault_generic_secret.account_ids.data["development"]]
-  most_recent = var.ami_name == "chd-*" ? true : false
+  most_recent = var.bep_ami_name == "chd-*" ? true : false
 
   filter {
     name = "name"
     values = [
-      var.ami_name,
+      var.bep_ami_name,
+    ]
+  }
+
+  filter {
+    name = "state"
+    values = [
+      "available",
+    ]
+  }
+}
+
+data "aws_ami" "chd_fe_ami" {
+  owners      = [data.vault_generic_secret.account_ids.data["development"]]
+  most_recent = var.fe_ami_name == "chd-*" ? true : false
+
+  filter {
+    name = "name"
+    values = [
+      var.fe_ami_name,
     ]
   }
 

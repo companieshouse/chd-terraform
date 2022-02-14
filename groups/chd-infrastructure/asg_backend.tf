@@ -82,7 +82,7 @@ module "bep_asg" {
   name = "${var.application}-bep"
   # Launch configuration
   lc_name       = "${var.application}-bep-launchconfig"
-  image_id      = data.aws_ami.chd_ami.id
+  image_id      = data.aws_ami.chd_bep_ami.id
   instance_type = var.bep_instance_size
   security_groups = [
     module.chd_bep_asg_security_group.this_security_group_id,
