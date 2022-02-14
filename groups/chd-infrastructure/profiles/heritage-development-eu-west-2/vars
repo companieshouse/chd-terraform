@@ -24,12 +24,6 @@ fe_public_access_cidrs = [
   "127.0.0.1/32"
 ]
 
-fe_access_cidrs = [
-  "10.254.1.0/24",
-  "10.254.2.0/24",
-  "10.254.3.0/24"
-]
-
 fe_cw_logs = {
   "audit.log" = {
     file_path = "/var/log/audit"
