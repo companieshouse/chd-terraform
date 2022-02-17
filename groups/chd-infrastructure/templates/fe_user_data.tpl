@@ -18,6 +18,8 @@ rm /etc/httpd/conf.d/welcome.conf
 rm /etc/httpd/conf.d/ssl.conf
 #Create and populate httpd config
 /usr/local/bin/j2 -f json /etc/httpd/conf/httpd.conf.j2 inputs.json > /etc/httpd/conf/httpd.conf
+#Create and populate the perl config
+/usr/local/bin/j2 -f json /etc/httpd/conf.d/chd_perl.conf.j2 inputs.json > /etc/httpd/conf.d/chd_perl.conf
 #Run Ansible playbook for Frontend deployment using provided inputs
 /usr/local/bin/ansible-playbook /root/frontend_deployment.yml -e '${ANSIBLE_INPUTS}'
 # Update hostname and reboot
