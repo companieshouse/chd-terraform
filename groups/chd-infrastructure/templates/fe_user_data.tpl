@@ -6,7 +6,6 @@ exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 cat <<EOF >>inputs.json
 ${CHD_FRONTEND_INPUTS}
 EOF
-crontab -u chd /root/cronfile
 #Set DATABASE environment variable
 echo "export DATABASE=ORACLE" >> /home/chd/.bash_profile
 #Update Nagios registration script with relevant template
