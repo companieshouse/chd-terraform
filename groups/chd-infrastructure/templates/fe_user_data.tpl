@@ -16,6 +16,7 @@ REPLACE=CHD_FRONTEND_${HERITAGE_ENVIRONMENT} /usr/local/bin/j2 /usr/local/bin/na
 #Remove unnecessary files
 rm /etc/httpd/conf.d/welcome.conf
 rm /etc/httpd/conf.d/ssl.conf
+rm /etc/httpd/conf.d/perl.conf
 #Create and populate httpd config
 /usr/local/bin/j2 -f json /etc/httpd/conf/httpd.conf.j2 inputs.json > /etc/httpd/conf/httpd.conf
 #Create and populate the perl config
