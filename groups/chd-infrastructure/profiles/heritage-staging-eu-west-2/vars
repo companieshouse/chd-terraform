@@ -54,6 +54,16 @@ fe_cw_logs = {
     file_path = "/var/log/amazon/ssm"
     log_group_retention = 7
   }
+
+  "chd_access_log" = {
+    file_path = "/etc/httpd/logs"
+    log_group_retention = 7
+  }
+
+  "chd_error_log" = {
+    file_path = "/etc/httpd/logs"
+    log_group_retention = 7
+  }
 }
 
 # ------------------------------------------------------------------------------
@@ -94,6 +104,16 @@ bep_cw_logs = {
 
   "amazon-ssm-agent.log" = {
     file_path = "/var/log/amazon/ssm"
+    log_group_retention = 7
+  }
+
+  "backend.log" = {
+    file_path = "/home/chd"
+    log_group_retention = 7
+  }
+
+  "weeding.log" = {
+    file_path = "/home/chd"
     log_group_retention = 7
   }
 }
