@@ -14,9 +14,9 @@ application = "chd"
 # CHD FE
 # ------------------------------------------------------------------------------
 fe_instance_size = "t2.medium"
-fe_asg_min_size = 0
-fe_asg_max_size = 0
-fe_asg_desired_capacity = 0
+fe_asg_min_size = 2
+fe_asg_max_size = 2
+fe_asg_desired_capacity = 2
 
 fe_public_access_cidrs = [
   "0.0.0.0/0"
