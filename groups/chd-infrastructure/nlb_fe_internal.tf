@@ -24,7 +24,7 @@ module "nlb_fe_internal" {
 
   subnets                    = data.aws_subnet_ids.web.ids
 
-  http_tcp_listeners = [
+  http_tcp_listeners = concat([
     {
       port               = 21
       protocol           = "TCP"
@@ -40,7 +40,8 @@ module "nlb_fe_internal" {
       protocol           = "TCP"
       target_group_index = 2
     }
-  ]
+  ],
+  local.chd_fe_ftp_passive_listeners)
 
   target_groups = [
     {
