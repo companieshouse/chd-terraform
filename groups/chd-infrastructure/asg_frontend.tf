@@ -9,6 +9,30 @@ module "chd_fe_asg_security_group" {
   description = "Security group for the ${var.application} frontend asg"
   vpc_id      = data.aws_vpc.vpc.id
 
+  ingress_with_cidr_blocks = [
+    {
+      from_port   = 21
+      to_port     = 21
+      protocol    = "tcp"
+      description = "FTP Access"
+      cidr_blocks = join(",", local.admin_cidrs)
+    },
+    {
+      from_port   = 21
+      to_port     = 21
+      protocol    = "tcp"
+      description = "Allow FTP connections from internal NLB"
+      cidr_blocks = join(",", formatlist("%s/32", [for eni in data.aws_network_interface.nlb_fe_internal : eni.private_ip]))
+    },
+    {
+      from_port   = 21
+      to_port     = 21
+      protocol    = "tcp"
+      description = "Allow FTP connections from external NLB"
+      cidr_blocks = join(",", formatlist("%s/32", [for eni in data.aws_network_interface.nlb_fe_external : eni.private_ip]))
+    },
+  ]
+
   computed_ingress_with_source_security_group_id = [
     {
       rule                     = "http-80-tcp"
@@ -106,7 +130,13 @@ module "fe_asg" {
   refresh_triggers               = ["launch_configuration"]
   key_name                       = aws_key_pair.chd_keypair.key_name
   termination_policies           = ["OldestLaunchConfiguration"]
-  target_group_arns              = concat(module.chd_external_alb.target_group_arns, module.chd_internal_alb.target_group_arns)
+  target_group_arns              = concat(
+    module.chd_external_alb.target_group_arns,
+    module.chd_internal_alb.target_group_arns,
+    local.chd_fe_internal_ftp_target_group_arn,
+    local.chd_fe_external_ftp_target_group_arn
+  )
+
   iam_instance_profile           = module.chd_fe_profile.aws_iam_instance_profile.name
   user_data_base64               = data.template_cloudinit_config.fe_userdata_config.rendered
 
