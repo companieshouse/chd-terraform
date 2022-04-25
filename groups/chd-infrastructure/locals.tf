@@ -50,6 +50,9 @@ locals {
     }
   ] : []
 
+  # Define the NLB FTP target group ARNs (index 0) for ASG registration
+  chd_fe_internal_ftp_target_group_arn = [module.nlb_fe_internal.target_group_arns[0]]
+  chd_fe_external_ftp_target_group_arn = [module.nlb_fe_external.target_group_arns[0]]
 
   chd_fe_ansible_inputs = {
     s3_bucket_releases         = local.s3_releases["release_bucket_name"]
