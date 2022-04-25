@@ -215,3 +215,15 @@ variable "fe_access_cidrs" {
   description = "List of additional CIDRs requiring access via the internal ALB"
   default     = []
 }
+
+variable "fe_ftp_passive_ports_start" {
+  type        = number
+  default     = 65401
+  description = "The starting port that will define the range of ports used for FTP passive mode"
+}
+
+variable "fe_ftp_passive_ports_end" {
+  type        = number
+  default     = 65440
+  description = "The ending port that will define the range of ports used for FTP passive mode"
+}

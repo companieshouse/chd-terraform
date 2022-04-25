@@ -54,6 +54,15 @@ locals {
   chd_fe_internal_ftp_target_group_arn = [module.nlb_fe_internal.target_group_arns[0]]
   chd_fe_external_ftp_target_group_arn = [module.nlb_fe_external.target_group_arns[0]]
 
+  # Generate listener configuration for FTP passive ports
+  chd_fe_ftp_passive_listeners = [
+    for num in range(var.fe_ftp_passive_ports_start, var.fe_ftp_passive_ports_end) : {
+      port               = format("%s%d", "", num)
+      protocol           = "TCP"
+      target_group_index = 0
+    }
+  ]
+
   chd_fe_ansible_inputs = {
     s3_bucket_releases         = local.s3_releases["release_bucket_name"]
     s3_bucket_configs          = local.s3_releases["config_bucket_name"]
