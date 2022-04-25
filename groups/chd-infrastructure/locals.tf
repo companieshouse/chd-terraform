@@ -57,7 +57,7 @@ locals {
   # Generate listener configuration for FTP passive ports
   chd_fe_ftp_passive_listeners = [
     for num in range(var.fe_ftp_passive_ports_start, var.fe_ftp_passive_ports_end) : {
-      port               = format("%s%d", "", num)
+      port               = format("%d", num)
       protocol           = "TCP"
       target_group_index = 0
     }
