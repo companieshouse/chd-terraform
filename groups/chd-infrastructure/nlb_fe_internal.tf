@@ -73,6 +73,14 @@ module "nlb_fe_internal" {
           port             = 80
         }
       ]
+      health_check = {
+        enabled             = true
+        interval            = 30
+        port                = 80
+        healthy_threshold   = 3
+        unhealthy_threshold = 3
+        protocol            = "HTTP"
+      }
       tags = {
         InstanceTargetGroupTag = var.application
       }
@@ -88,6 +96,14 @@ module "nlb_fe_internal" {
           port             = 443
         }
       ]
+      health_check = {
+        enabled             = true
+        interval            = 30
+        port                = 80
+        healthy_threshold   = 3
+        unhealthy_threshold = 3
+        protocol            = "HTTP"
+      }
       tags = {
         InstanceTargetGroupTag = var.application
       }
