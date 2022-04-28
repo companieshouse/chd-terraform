@@ -154,8 +154,13 @@ module "fe_asg" {
   target_group_arns              = concat(
     module.chd_external_alb.target_group_arns,
     module.chd_internal_alb.target_group_arns,
-    local.chd_fe_internal_ftp_target_group_arn,
-    local.chd_fe_external_ftp_target_group_arn
+    flatten(
+      [
+        for num in range(2, length(module.nlb_fe_internal.target_group_arns)) : [
+          [module.nlb_fe_internal.target_group_arns[num], module.nlb_fe_external.target_group_arns[num]]
+        ]
+      ]
+    )
   )
 
   iam_instance_profile           = module.chd_fe_profile.aws_iam_instance_profile.name

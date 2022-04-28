@@ -50,10 +50,6 @@ locals {
     }
   ] : []
 
-  # Define the NLB FTP target group ARNs (index 2) for ASG registration
-  chd_fe_internal_ftp_target_group_arn = [module.nlb_fe_internal.target_group_arns[2]]
-  chd_fe_external_ftp_target_group_arn = [module.nlb_fe_external.target_group_arns[2]]
-
   # Generate listener configuration for FTP passive ports
   chd_fe_ftp_passive_listeners = [
     for num in range(var.fe_ftp_passive_ports_start, var.fe_ftp_passive_ports_end) : {
