@@ -104,6 +104,10 @@ module "nlb_fe_external" {
         unhealthy_threshold = 3
         protocol            = "TCP"
       }
+      stickiness = {
+        type    = "source_ip"
+        enabled = true
+      }
       tags = {
         InstanceTargetGroupTag = var.application
       }
