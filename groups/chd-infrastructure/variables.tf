@@ -218,12 +218,12 @@ variable "fe_access_cidrs" {
 
 variable "fe_ftp_passive_ports_start" {
   type        = number
-  default     = 65401
+  default     = 60401
   description = "The starting port that will define the range of ports used for FTP passive mode"
 }
 
 variable "fe_ftp_passive_ports_end" {
   type        = number
-  default     = 65440
+  default     = 60440
   description = "The ending port that will define the range of ports used for FTP passive mode"
 }

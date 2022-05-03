@@ -139,7 +139,8 @@ module "fe_asg" {
   # Auto scaling group
   asg_name                       = "${var.application}-fe-asg"
   vpc_zone_identifier            = data.aws_subnet_ids.web.ids
-  health_check_type              = "ELB"
+#  health_check_type              = "ELB"
+  health_check_type              = "EC2"
   min_size                       = var.fe_asg_min_size
   max_size                       = var.fe_asg_max_size
   desired_capacity               = var.fe_asg_desired_capacity
@@ -154,8 +155,13 @@ module "fe_asg" {
   target_group_arns              = concat(
     module.chd_external_alb.target_group_arns,
     module.chd_internal_alb.target_group_arns,
-    local.chd_fe_internal_ftp_target_group_arn,
-    local.chd_fe_external_ftp_target_group_arn
+    flatten(
+      [
+        for num in range(2, length(module.nlb_fe_internal.target_group_arns)) : [
+          [module.nlb_fe_internal.target_group_arns[num], module.nlb_fe_external.target_group_arns[num]]
+        ]
+      ]
+    )
   )
 
   iam_instance_profile           = module.chd_fe_profile.aws_iam_instance_profile.name

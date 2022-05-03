@@ -50,16 +50,56 @@ locals {
     }
   ] : []
 
-  # Define the NLB FTP target group ARNs (index 0) for ASG registration
-  chd_fe_internal_ftp_target_group_arn = [module.nlb_fe_internal.target_group_arns[0]]
-  chd_fe_external_ftp_target_group_arn = [module.nlb_fe_external.target_group_arns[0]]
-
   # Generate listener configuration for FTP passive ports
   chd_fe_ftp_passive_listeners = [
     for num in range(var.fe_ftp_passive_ports_start, var.fe_ftp_passive_ports_end) : {
       port               = format("%d", num)
       protocol           = "TCP"
-      target_group_index = 0
+    }
+  ]
+
+  # Generate target group configuration for FTP passive ports
+  # Internal NLB TGs
+  chd_fe_internal_ftp_passive_tgs = [
+    for num in range(var.fe_ftp_passive_ports_start, var.fe_ftp_passive_ports_end) : {
+      name                 = "tg-${var.application}-fe-int-ftp-${num}"
+      backend_protocol     = "TCP"
+      backend_port         = num
+      target_type          = "instance"
+      deregistration_delay = 10
+      health_check = {
+        enabled             = true
+        interval            = 30
+        port                = 21
+        healthy_threshold   = 3
+        unhealthy_threshold = 3
+        protocol            = "TCP"
+      }
+      tags = {
+        InstanceTargetGroupTag = var.application
+      }
+    }
+  ]
+
+  # External NLB TGs
+  chd_fe_external_ftp_passive_tgs = [
+    for num in range(var.fe_ftp_passive_ports_start, var.fe_ftp_passive_ports_end) : {
+      name                 = "tg-${var.application}-fe-ext-ftp-${num}"
+      backend_protocol     = "TCP"
+      backend_port         = num
+      target_type          = "instance"
+      deregistration_delay = 10
+      health_check = {
+        enabled             = true
+        interval            = 30
+        port                = 21
+        healthy_threshold   = 3
+        unhealthy_threshold = 3
+        protocol            = "TCP"
+      }
+      tags = {
+        InstanceTargetGroupTag = var.application
+      }
     }
   ]
 
