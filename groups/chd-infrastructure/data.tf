@@ -148,6 +148,16 @@ data "template_cloudinit_config" "fe_userdata_config" {
   base64_encode = true
 
   part {
+    content_type = "text/cloud-config"
+    content = templatefile("${path.module}/templates/fe_ftp_server.tpl", {
+      passive_ports_start = var.fe_ftp_passive_ports_start
+      passive_ports_end   = var.fe_ftp_passive_ports_end
+      passive_hostname    = "${local.chd_fe_ftp_service_name}.${local.chd_fe_ftp_domain_name}"
+      image_mount         = var.fe_ftp_image_mount
+    })
+  }
+
+  part {
     content_type = "text/x-shellscript"
     content      = data.template_file.fe_userdata.rendered
   }

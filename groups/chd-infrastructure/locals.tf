@@ -103,6 +103,9 @@ locals {
     }
   ]
 
+  chd_fe_ftp_service_name = jsondecode(local.chd_fe_data).env_service_name
+  chd_fe_ftp_domain_name  = jsondecode(local.chd_fe_data).domain_name
+
   chd_fe_ansible_inputs = {
     s3_bucket_releases         = local.s3_releases["release_bucket_name"]
     s3_bucket_configs          = local.s3_releases["config_bucket_name"]
