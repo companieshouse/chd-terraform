@@ -86,10 +86,6 @@ module "nlb_fe_internal" {
         unhealthy_threshold = 3
         protocol            = "HTTP"
       }
-      stickiness = {
-        type    = "source_ip"
-        enabled = true
-      }
       tags = {
         InstanceTargetGroupTag = var.application
       }

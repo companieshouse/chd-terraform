@@ -75,10 +75,6 @@ locals {
         unhealthy_threshold = 3
         protocol            = "TCP"
       }
-      stickiness = {
-        type    = "source_ip"
-        enabled = true
-      }
       tags = {
         InstanceTargetGroupTag = var.application
       }
@@ -100,10 +96,6 @@ locals {
         healthy_threshold   = 3
         unhealthy_threshold = 3
         protocol            = "TCP"
-      }
-      stickiness = {
-        type    = "source_ip"
-        enabled = true
       }
       tags = {
         InstanceTargetGroupTag = var.application
