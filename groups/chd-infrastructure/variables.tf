@@ -233,3 +233,9 @@ variable "fe_ftp_image_mount" {
   default     = "/mnt/nfs/onsite/chd/image"
   description = "NFS mount path used to create the image symlink for the FTP server"
 }
+
+variable "fe_ftp_online_mount" {
+  type        = string
+  default     = "/mnt/nfs/onsite/chd/online"
+  description = "NFS mount path used to create the online symlink for the FTP server"
+}

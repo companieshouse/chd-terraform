@@ -27,6 +27,7 @@ fe_public_access_cidrs = [
 fe_ftp_passive_ports_start = 60401
 fe_ftp_passive_ports_end   = 60410
 fe_ftp_image_mount = "/mnt/nfs/chd/image"
+fe_ftp_online_mount = "/mnt/nfs/chd/online"
 
 fe_cw_logs = {
   "audit.log" = {

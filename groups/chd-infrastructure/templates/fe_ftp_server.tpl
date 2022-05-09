@@ -127,3 +127,4 @@ write_files:
 runcmd:
   - chkconfig vsftpd on
   - ln -s ${image_mount} /var/ftp/image
+  - ln -s ${online_mount} /var/ftp/online
