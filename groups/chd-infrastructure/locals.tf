@@ -52,7 +52,7 @@ locals {
 
   # Generate listener configuration for FTP passive ports
   chd_fe_ftp_passive_listeners = [
-    for num in range(var.fe_ftp_passive_ports_start, var.fe_ftp_passive_ports_end) : {
+    for num in range(var.fe_ftp_passive_ports_start, var.fe_ftp_passive_ports_end + 1) : {
       port               = format("%d", num)
       protocol           = "TCP"
     }
@@ -61,7 +61,7 @@ locals {
   # Generate target group configuration for FTP passive ports
   # Internal NLB TGs
   chd_fe_internal_ftp_passive_tgs = [
-    for num in range(var.fe_ftp_passive_ports_start, var.fe_ftp_passive_ports_end) : {
+    for num in range(var.fe_ftp_passive_ports_start, var.fe_ftp_passive_ports_end + 1) : {
       name                 = "tg-${var.application}-fe-int-ftp-${num}"
       backend_protocol     = "TCP"
       backend_port         = num
@@ -83,7 +83,7 @@ locals {
 
   # External NLB TGs
   chd_fe_external_ftp_passive_tgs = [
-    for num in range(var.fe_ftp_passive_ports_start, var.fe_ftp_passive_ports_end) : {
+    for num in range(var.fe_ftp_passive_ports_start, var.fe_ftp_passive_ports_end + 1) : {
       name                 = "tg-${var.application}-fe-ext-ftp-${num}"
       backend_protocol     = "TCP"
       backend_port         = num

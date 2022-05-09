@@ -228,14 +228,8 @@ variable "fe_ftp_passive_ports_end" {
   description = "The ending port that will define the range of ports used for FTP passive mode"
 }
 
-variable "fe_ftp_image_mount" {
+variable "fe_ftp_root_dir" {
   type        = string
-  default     = "/mnt/nfs/onsite/chd/image"
-  description = "NFS mount path used to create the image symlink for the FTP server"
-}
-
-variable "fe_ftp_online_mount" {
-  type        = string
-  default     = "/mnt/nfs/onsite/chd/online"
-  description = "NFS mount path used to create the online symlink for the FTP server"
+  default     = "/mnt/nfs/onsite/chd/"
+  description = "Path for the FTP server's root directory"
 }

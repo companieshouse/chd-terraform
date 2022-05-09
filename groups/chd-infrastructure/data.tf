@@ -153,8 +153,7 @@ data "template_cloudinit_config" "fe_userdata_config" {
       passive_ports_start = var.fe_ftp_passive_ports_start
       passive_ports_end   = var.fe_ftp_passive_ports_end
       passive_hostname    = "${local.chd_fe_ftp_service_name}.${local.chd_fe_ftp_domain_name}"
-      image_mount         = var.fe_ftp_image_mount
-      online_mount        = var.fe_ftp_online_mount
+      root_dir            = var.fe_ftp_root_dir
     })
   }
 

@@ -5,7 +5,7 @@ write_files:
     content: |
       # Allow anonymous FTP? (Beware - allowed by default if you comment this out).
       anonymous_enable=YES
-      anon_root=/var/ftp/
+      anon_root=${root_dir}
       dirlist_enable=no
       #
       # Uncomment this to allow local users to log in.
@@ -125,6 +125,5 @@ write_files:
 
 
 runcmd:
+  - sed -i '/Required-Start/ s/$/ nfs-watcher/'  /etc/init.d/vsftpd
   - chkconfig vsftpd on
-  - ln -s ${image_mount} /var/ftp/image
-  - ln -s ${online_mount} /var/ftp/online
