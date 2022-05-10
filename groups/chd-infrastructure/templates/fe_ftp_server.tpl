@@ -125,5 +125,5 @@ write_files:
 
 
 runcmd:
-  - sed -i '/Required-Start/ s/$/ nfs-watcher/'  /etc/init.d/vsftpd
+  - sed -i '/Required-Start/ s/$/ nfs-watcher httpd/'  /etc/init.d/vsftpd
   - chkconfig vsftpd on
