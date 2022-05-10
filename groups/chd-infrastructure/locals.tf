@@ -51,8 +51,14 @@ locals {
   ] : []
 
   # Generate listener configuration for FTP passive ports
-  chd_fe_ftp_passive_listeners = [
-    for num in range(var.fe_ftp_passive_ports_start, var.fe_ftp_passive_ports_end + 1) : {
+  chd_fe_ftp_int_passive_listeners = [
+    for num in range(var.fe_ftp_int_passive_ports_start, var.fe_ftp_int_passive_ports_end + 1) : {
+      port               = format("%d", num)
+      protocol           = "TCP"
+    }
+  ]
+  chd_fe_ftp_ext_passive_listeners = [
+    for num in range(var.fe_ftp_ext_passive_ports_start, var.fe_ftp_ext_passive_ports_end + 1) : {
       port               = format("%d", num)
       protocol           = "TCP"
     }
@@ -61,7 +67,7 @@ locals {
   # Generate target group configuration for FTP passive ports
   # Internal NLB TGs
   chd_fe_internal_ftp_passive_tgs = [
-    for num in range(var.fe_ftp_passive_ports_start, var.fe_ftp_passive_ports_end + 1) : {
+    for num in range(var.fe_ftp_int_passive_ports_start, var.fe_ftp_int_passive_ports_end + 1) : {
       name                 = "tg-${var.application}-fe-int-ftp-${num}"
       backend_protocol     = "TCP"
       backend_port         = num
@@ -83,7 +89,7 @@ locals {
 
   # External NLB TGs
   chd_fe_external_ftp_passive_tgs = [
-    for num in range(var.fe_ftp_passive_ports_start, var.fe_ftp_passive_ports_end + 1) : {
+    for num in range(var.fe_ftp_ext_passive_ports_start, var.fe_ftp_ext_passive_ports_end + 1) : {
       name                 = "tg-${var.application}-fe-ext-ftp-${num}"
       backend_protocol     = "TCP"
       backend_port         = num
@@ -92,7 +98,7 @@ locals {
       health_check = {
         enabled             = true
         interval            = 30
-        port                = 21
+        port                = 2121
         healthy_threshold   = 3
         unhealthy_threshold = 3
         protocol            = "TCP"
@@ -102,9 +108,6 @@ locals {
       }
     }
   ]
-
-  chd_fe_ftp_service_name = jsondecode(local.chd_fe_data).env_service_name
-  chd_fe_ftp_domain_name  = jsondecode(local.chd_fe_data).domain_name
 
   chd_fe_ansible_inputs = {
     s3_bucket_releases         = local.s3_releases["release_bucket_name"]

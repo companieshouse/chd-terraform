@@ -41,7 +41,7 @@ module "nlb_fe_internal" {
       target_group_index = 2
     }
   ],
-  local.chd_fe_ftp_passive_listeners)
+  local.chd_fe_ftp_int_passive_listeners)
 
   target_groups = concat([
     {

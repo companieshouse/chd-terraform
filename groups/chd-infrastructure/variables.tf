@@ -216,16 +216,28 @@ variable "fe_access_cidrs" {
   default     = []
 }
 
-variable "fe_ftp_passive_ports_start" {
+variable "fe_ftp_int_passive_ports_start" {
   type        = number
   default     = 60401
-  description = "The starting port that will define the range of ports used for FTP passive mode"
+  description = "The starting port that will define the range of ports used for FTP passive mode on the Internal FTP server"
 }
 
-variable "fe_ftp_passive_ports_end" {
+variable "fe_ftp_int_passive_ports_end" {
   type        = number
   default     = 60440
-  description = "The ending port that will define the range of ports used for FTP passive mode"
+  description = "The ending port that will define the range of ports used for FTP passive mode on the Internal FTP server"
+}
+
+variable "fe_ftp_ext_passive_ports_start" {
+  type        = number
+  default     = 60451
+  description = "The starting port that will define the range of ports used for FTP passive mode on the External FTP server"
+}
+
+variable "fe_ftp_ext_passive_ports_end" {
+  type        = number
+  default     = 60490
+  description = "The ending port that will define the range of ports used for FTP passive mode on the External FTP server"
 }
 
 variable "fe_ftp_root_dir" {
