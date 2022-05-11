@@ -79,7 +79,7 @@ write_files:
       #ascii_download_enable=YES
       #
       # You may fully customise the login banner string:
-      #ftpd_banner=Welcome to blah FTP service.
+      ftpd_banner=Companies House Direct
       #
       # You may specify a file of disallowed anonymous e-mail addresses. Apparently
       # useful for combatting certain DoS attacks.
@@ -202,7 +202,7 @@ write_files:
       #ascii_download_enable=YES
       #
       # You may fully customise the login banner string:
-      #ftpd_banner=Welcome to blah FTP service.
+      ftpd_banner=Companies House Direct
       #
       # You may specify a file of disallowed anonymous e-mail addresses. Apparently
       # useful for combatting certain DoS attacks.
