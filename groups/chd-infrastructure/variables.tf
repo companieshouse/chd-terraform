@@ -224,7 +224,7 @@ variable "fe_ftp_int_passive_ports_start" {
 
 variable "fe_ftp_int_passive_ports_end" {
   type        = number
-  default     = 60440
+  default     = 60420
   description = "The ending port that will define the range of ports used for FTP passive mode on the Internal FTP server"
 }
 
@@ -236,7 +236,7 @@ variable "fe_ftp_ext_passive_ports_start" {
 
 variable "fe_ftp_ext_passive_ports_end" {
   type        = number
-  default     = 60490
+  default     = 60470
   description = "The ending port that will define the range of ports used for FTP passive mode on the External FTP server"
 }
 
