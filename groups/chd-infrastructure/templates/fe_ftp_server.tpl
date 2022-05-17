@@ -254,4 +254,5 @@ runcmd:
     ext_ip=$(dig +short $${az}.${external_nlb_name})
     sed -i "s/^pasv_address=.*/pasv_address=$${int_ip}/" /etc/vsftpd/vsftpd.conf
     sed -i "s/^pasv_address=.*/pasv_address=$${ext_ip}/" /etc/vsftpd/vsftpd-external.conf
+  - echo "vsftpd: ALL" >> /etc/hosts.allow
   - chkconfig vsftpd on
