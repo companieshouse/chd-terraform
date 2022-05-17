@@ -41,7 +41,7 @@ module "nlb_fe_external" {
       target_group_index = 2
     }
   ],
-  local.chd_fe_ftp_passive_listeners)
+  local.chd_fe_ftp_ext_passive_listeners)
 
   target_groups = concat([
     {
@@ -93,13 +93,13 @@ module "nlb_fe_external" {
     {
       name                 = "tg-${var.application}-fe-external-ftp-001"
       backend_protocol     = "TCP"
-      backend_port         = 21
+      backend_port         = 2121
       target_type          = "instance"
       deregistration_delay = 10
       health_check = {
         enabled             = true
         interval            = 30
-        port                = 21
+        port                = 2121
         healthy_threshold   = 3
         unhealthy_threshold = 3
         protocol            = "TCP"
