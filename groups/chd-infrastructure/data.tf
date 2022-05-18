@@ -140,6 +140,7 @@ data "template_file" "fe_userdata" {
     HERITAGE_ENVIRONMENT = title(var.environment)
     CHD_FRONTEND_INPUTS  = local.chd_fe_data
     ANSIBLE_INPUTS       = jsonencode(local.chd_fe_ansible_inputs)
+    ONLINE_MOUNT_PATH    = var.fe_online_mount_path
   }
 }
 
