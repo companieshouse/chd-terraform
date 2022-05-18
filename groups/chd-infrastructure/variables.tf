@@ -245,3 +245,9 @@ variable "fe_ftp_root_dir" {
   default     = "/mnt/nfs/onsite/chd/"
   description = "Path for the FTP server's root directory"
 }
+
+variable "fe_online_mount_path" {
+  type        = string
+  default     = "/mnt/nfs/chd/online"
+  description = "Path to the online NFS mount"
+}

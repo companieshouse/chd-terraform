@@ -23,6 +23,8 @@ rm /etc/httpd/conf.d/perl.conf
 /usr/local/bin/j2 -f json /etc/httpd/conf.d/chd_perl.conf.j2 inputs.json > /etc/httpd/conf.d/chd_perl.conf
 #Run Ansible playbook for Frontend deployment using provided inputs
 /usr/local/bin/ansible-playbook /root/frontend_deployment.yml -e '${ANSIBLE_INPUTS}'
+#Create htdocs symlink
+ln -s ${ONLINE_MOUNT_PATH} /home/chd/htdocs/chd3/static/online
 # Update hostname and reboot
 INSTANCEID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
 sed -i "s/HOSTNAME=.*/HOSTNAME=$INSTANCEID/" /etc/sysconfig/network
