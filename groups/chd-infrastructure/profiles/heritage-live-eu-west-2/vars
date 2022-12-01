@@ -152,3 +152,5 @@ nfs_mounts = {
     nfs_server_address = "ipo-file-svm-lif-be1.internal.ch"
   }
 }
+
+test_access_enable = true

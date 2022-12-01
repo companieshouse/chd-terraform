@@ -251,3 +251,9 @@ variable "fe_online_mount_path" {
   default     = "/mnt/nfs/chd/online"
   description = "Path to the online NFS mount"
 }
+
+variable "test_access_enable" {
+  type        = bool
+  description = "Controls whether access from the Test subnets is required (true) or not (false)"
+  default     = false
+}
