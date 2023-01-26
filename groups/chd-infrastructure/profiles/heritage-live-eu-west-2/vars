@@ -18,7 +18,7 @@ fe_asg_min_size = 2
 fe_asg_max_size = 2
 fe_asg_desired_capacity = 2
 
-fe_online_mount_path = "/mnt/nfs/onsite/chd/online"
+fe_online_mount_path = "/mnt/nfs/chd/online"
 
 fe_public_access_cidrs = [
   "0.0.0.0/0"
@@ -134,22 +134,6 @@ nfs_mounts = {
   },
   chd_post = {
     local_mount_point = "/mnt/nfs/chd/post"
-  },
-  # Onsite Mounts
-  chd_image_onp = {
-    local_mount_point = "/mnt/nfs/onsite/chd/image"
-    nfs_source_mount = "chd_image"
-    nfs_server_address = "ipo-file-svm-lif-be1.internal.ch"
-  },
-  chd_online_onp = {
-    local_mount_point = "/mnt/nfs/onsite/chd/online"
-    nfs_source_mount = "chd_online"
-    nfs_server_address = "ipo-file-svm-lif-be1.internal.ch"
-  },
-  chd_post_onp = {
-    local_mount_point = "/mnt/nfs/onsite/chd/post"
-    nfs_source_mount = "chd_post"
-    nfs_server_address = "ipo-file-svm-lif-be1.internal.ch"
   }
 }
 
