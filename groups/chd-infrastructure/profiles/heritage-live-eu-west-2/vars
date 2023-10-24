@@ -134,6 +134,9 @@ nfs_mounts = {
   },
   chd_post = {
     local_mount_point = "/mnt/nfs/chd/post"
+  },
+  xmlgw = {
+    local_mount_point = "/mnt/nfs/chd/image/xmlgw"
   }
 }
 
