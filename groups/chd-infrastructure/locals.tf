@@ -21,6 +21,7 @@ locals {
 
   kms_keys_data          = data.vault_generic_secret.kms_keys.data
   security_kms_keys_data = data.vault_generic_secret.security_kms_keys.data
+  account_ssm_key_arn    = local.kms_keys_data["ssm"]
   logs_kms_key_id        = local.kms_keys_data["logs"]
   ssm_kms_key_id         = local.security_kms_keys_data["session-manager-kms-key-arn"]
 
@@ -144,4 +145,13 @@ locals {
     cw_agent_user              = "root"
   }
 
+  parameter_store_path_prefix = "/${var.application}/${var.environment}"
+  
+  parameter_store_secrets = {
+    frontend_inputs         = local.chd_fe_data
+    frontend_ansible_inputs = jsonencode(local.chd_fe_ansible_inputs)
+    backend_inputs          = local.chd_bep_data
+    backend_ansible_inputs  = jsonencode(local.chd_bep_ansible_inputs)
+    backend_cron_entries    = data.template_file.chd_cron_file.rendered
+  }
 }
