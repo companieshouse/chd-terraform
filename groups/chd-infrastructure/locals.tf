@@ -152,6 +152,6 @@ locals {
     frontend_ansible_inputs = jsonencode(local.chd_fe_ansible_inputs)
     backend_inputs          = local.chd_bep_data
     backend_ansible_inputs  = jsonencode(local.chd_bep_ansible_inputs)
-    backend_cron_entries    = data.template_file.chd_cron_file.rendered
+    backend_cron_entries    = base64gzip(data.template_file.chd_cron_file.rendered)
   }
 }
