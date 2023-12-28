@@ -7,7 +7,7 @@ GET_PARAM_COMMAND="/usr/local/bin/aws ssm get-parameter --with-decryption --regi
 #Create key:value variable
 $${GET_PARAM_COMMAND} '${CHD_BACKEND_INPUTS_PATH}' > inputs.json
 #Create cron file and set crontab for CHD user:
-$${GET_PARAM_COMMAND} '${CHD_CRON_ENTRIES_PATH}' > /root/cronfile
+$${GET_PARAM_COMMAND} '${CHD_CRON_ENTRIES_PATH}' | base64 -d | gunzip > /root/cronfile
 crontab -u chd /root/cronfile
 #Set DATABASE environment variable
 echo "export DATABASE=ORACLE" >> /home/chd/.bash_profile
