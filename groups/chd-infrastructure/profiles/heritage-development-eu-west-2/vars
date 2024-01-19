@@ -130,7 +130,7 @@ bep_cw_logs = {
 }
 
 # NFS Configuration
-nfs_server = "10.104.9.145"
+nfs_server = "cvonfs.development.heritage.aws.internal"
 nfs_mount_destination_parent_dir = "/-"
 nfs_mounts = {
   # CVO Mounts
