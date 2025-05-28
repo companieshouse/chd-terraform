@@ -138,6 +138,9 @@ nfs_mounts = {
   xmlgw = {
     local_mount_point = "/mnt/nfs/chd/image/xmlgw"
   }
+  batenvp1rep = {
+    local_mount_point = "/mnt/nfs/batenvp1rep"
+  }
 }
 
 test_access_enable = true
