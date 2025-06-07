@@ -154,4 +154,42 @@ locals {
     backend_ansible_inputs  = jsonencode(local.chd_bep_ansible_inputs)
     backend_cron_entries    = base64gzip(data.template_file.chd_cron_file.rendered)
   }
+
+  bep_s3_read_buckets          = jsondecode(local.chd_ec2_data["bep-s3-read-buckets"])
+  bep_s3_read_buckets_arn_list = length(local.bep_s3_read_buckets) > 0 ? flatten([
+    for bucket in local.bep_s3_read_buckets : [
+      "arn:aws:s3:::${bucket}",
+      "arn:aws:s3:::${bucket}/*"
+    ]
+  ]) : []
+
+  bep_s3_read_buckets_iam_statement = length(local.bep_s3_read_buckets_arn_list) > 0 ? [
+    {
+      sid    = "AllowS3ReadAccess",
+      effect = "Allow",
+      resources = local.bep_s3_read_buckets_arn_list,
+      actions = [
+        "s3:Get*",
+        "s3:List*",
+      ]
+    }
+  ] : []
+
+  bep_s3_write_buckets          = jsondecode(local.chd_ec2_data["bep-s3-write-buckets"])
+  bep_s3_write_buckets_arn_list = length(local.bep_s3_write_buckets) > 0 ? flatten([
+    for bucket in local.bep_s3_write_buckets : [
+      "arn:aws:s3:::${bucket}/*"
+    ]
+  ]) : []
+
+  bep_s3_write_buckets_iam_statement = length(local.bep_s3_write_buckets_arn_list) > 0 ? [
+    {
+      sid    = "AllowS3WriteAccess"
+      effect = "Allow",
+      resources = local.bep_s3_write_buckets_arn_list,
+      actions = [
+        "s3:PutObject*"
+      ]
+    }
+  ] : []
 }
