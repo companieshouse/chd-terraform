@@ -60,29 +60,33 @@ module "chd_bep_profile" {
     local.ssm_kms_key_id,
     local.account_ssm_key_arn
   ]
-  custom_statements = [
-    {
-      sid    = "AllowAccessToReleaseBucket",
-      effect = "Allow",
-      resources = [
-        "arn:aws:s3:::${local.s3_releases["release_bucket_name"]}/*",
-        "arn:aws:s3:::${local.s3_releases["release_bucket_name"]}",
-        "arn:aws:s3:::${local.s3_releases["config_bucket_name"]}/*",
-        "arn:aws:s3:::${local.s3_releases["config_bucket_name"]}"
-      ],
-      actions = [
-        "s3:Get*",
-        "s3:List*",
-      ]
-    },
-    {
-      sid       = "AllowReadOfParameterStore",
-      effect    = "Allow",
-      resources = ["arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.application}/${var.environment}/*"],
-      actions = [
-        "ssm:GetParameter*"
-      ]
-    }
-  ]
+  custom_statements = concat(
+    [
+      {
+        sid    = "AllowAccessToReleaseBucket",
+        effect = "Allow",
+        resources = [
+          "arn:aws:s3:::${local.s3_releases["release_bucket_name"]}/*",
+          "arn:aws:s3:::${local.s3_releases["release_bucket_name"]}",
+          "arn:aws:s3:::${local.s3_releases["config_bucket_name"]}/*",
+          "arn:aws:s3:::${local.s3_releases["config_bucket_name"]}"
+        ],
+        actions = [
+          "s3:Get*",
+          "s3:List*",
+        ]
+      },
+      {
+        sid       = "AllowReadOfParameterStore",
+        effect    = "Allow",
+        resources = ["arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.application}/${var.environment}/*"],
+        actions = [
+          "ssm:GetParameter*"
+        ]
+      }
+    ],
+    local.bep_s3_read_buckets_iam_statement,
+    local.bep_s3_write_buckets_iam_statement
+  )
 }
 
