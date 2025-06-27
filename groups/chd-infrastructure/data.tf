@@ -180,19 +180,24 @@ data "vault_generic_secret" "chd_bep_data" {
 }
 
 data "template_file" "chd_cron_file" {
-  template = file("${path.module}/templates/${var.aws_profile}/bep_cron.tpl")
+  template = file("${path.module}/templates/${var.aws_profile}/chd_cron.tpl")
+}
+
+data "template_file" "bulkdata_cron_file" {
+  template = file("${path.module}/templates/${var.aws_profile}/bulkdata_cron.tpl")
 }
 
 data "template_file" "bep_userdata" {
   template = file("${path.module}/templates/bep_user_data.tpl")
 
   vars = {
-    REGION                  = var.aws_region
-    HERITAGE_ENVIRONMENT    = title(var.environment)
-    APP_VERSION             = var.bep_app_release_version
-    CHD_BACKEND_INPUTS_PATH = "${local.parameter_store_path_prefix}/backend_inputs"
-    ANSIBLE_INPUTS_PATH     = "${local.parameter_store_path_prefix}/backend_ansible_inputs"
-    CHD_CRON_ENTRIES_PATH   = "${local.parameter_store_path_prefix}/backend_cron_entries"
+    REGION                     = var.aws_region
+    HERITAGE_ENVIRONMENT       = title(var.environment)
+    APP_VERSION                = var.bep_app_release_version
+    CHD_BACKEND_INPUTS_PATH    = "${local.parameter_store_path_prefix}/backend_inputs"
+    ANSIBLE_INPUTS_PATH        = "${local.parameter_store_path_prefix}/backend_ansible_inputs"
+    CHD_CRON_ENTRIES_PATH      = "${local.parameter_store_path_prefix}/chd_cron_entries"
+    BULKDATA_CRON_ENTRIES_PATH = "${local.parameter_store_path_prefix}/bulkdata_cron_entries"
   }
 }
 
