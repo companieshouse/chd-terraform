@@ -1,9 +1,9 @@
 data "aws_network_interface" "nlb_fe_external" {
-  for_each = data.aws_subnet_ids.public.ids
+  for_each = data.aws_subnets.public.ids
 
   filter {
     name   = "description"
-    values = ["ELB ${module.nlb_fe_external.this_lb_arn_suffix}"]
+    values = ["ELB ${module.nlb_fe_external.lb_arn_suffix}"]
   }
 
   filter {
@@ -14,7 +14,7 @@ data "aws_network_interface" "nlb_fe_external" {
 
 module "nlb_fe_external" {
   source  = "terraform-aws-modules/alb/aws"
-  version = "~> 5.0"
+  version = "8.7.0"
 
   name                       = "nlb-${var.application}-fe-external-001"
   vpc_id                     = data.aws_vpc.vpc.id
@@ -22,7 +22,7 @@ module "nlb_fe_external" {
   load_balancer_type         = "network"
   enable_deletion_protection = true
 
-  subnets                    = data.aws_subnet_ids.public.ids
+  subnets                    = data.aws_subnets.public.ids
 
   http_tcp_listeners = concat([
     {
@@ -51,7 +51,7 @@ module "nlb_fe_external" {
       target_type          = "alb"
       targets = [
         {
-          target_id        = module.chd_external_alb.this_lb_arn
+          target_id        =  module.chd_external_alb.lb_arn
           port             = 80
         }
       ]
@@ -74,7 +74,7 @@ module "nlb_fe_external" {
       target_type          = "alb"
       targets = [
         {
-          target_id        = module.chd_external_alb.this_lb_arn
+          target_id        =  module.chd_external_alb.lb_arn
           port             = 443
         }
       ]
@@ -113,8 +113,8 @@ module "nlb_fe_external" {
 
   tags = merge(
     local.default_tags,
-    map(
-      "ServiceTeam", "${upper(var.application)}-FE-Support"
-    )
+    tomap({
+      "ServiceTeam" = "${upper(var.application)}-FE-Support"
+    })
   )
 }

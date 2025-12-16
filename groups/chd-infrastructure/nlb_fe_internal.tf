@@ -1,9 +1,9 @@
 data "aws_network_interface" "nlb_fe_internal" {
-  for_each = data.aws_subnet_ids.web.ids
+  for_each = data.aws_subnets.web.ids
 
   filter {
     name   = "description"
-    values = ["ELB ${module.nlb_fe_internal.this_lb_arn_suffix}"]
+    values = ["ELB ${module.nlb_fe_internal.lb_arn_suffix}"]
   }
 
   filter {
@@ -14,7 +14,7 @@ data "aws_network_interface" "nlb_fe_internal" {
 
 module "nlb_fe_internal" {
   source  = "terraform-aws-modules/alb/aws"
-  version = "~> 5.0"
+  version = "8.7.0"
 
   name                       = "nlb-${var.application}-fe-internal-001"
   vpc_id                     = data.aws_vpc.vpc.id
@@ -22,7 +22,7 @@ module "nlb_fe_internal" {
   load_balancer_type         = "network"
   enable_deletion_protection = true
 
-  subnets                    = data.aws_subnet_ids.web.ids
+  subnets                    = data.aws_subnets.web.ids
 
   http_tcp_listeners = concat([
     {
@@ -51,7 +51,7 @@ module "nlb_fe_internal" {
       target_type          = "alb"
       targets = [
         {
-          target_id        = module.chd_internal_alb.this_lb_arn
+          target_id        =  module.chd_internal_alb.lb_arn
           port             = 80
         }
       ]
@@ -74,7 +74,7 @@ module "nlb_fe_internal" {
       target_type          = "alb"
       targets = [
         {
-          target_id        = module.chd_internal_alb.this_lb_arn
+          target_id        =  module.chd_internal_alb.lb_arn
           port             = 443
         }
       ]
@@ -113,8 +113,8 @@ module "nlb_fe_internal" {
 
   tags = merge(
     local.default_tags,
-    map(
-      "ServiceTeam", "${upper(var.application)}-FE-Support"
-    )
+    tomap({
+      "ServiceTeam" = "${upper(var.application)}-FE-Support"
+    })
   )
 }

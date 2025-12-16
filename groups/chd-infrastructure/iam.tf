@@ -1,15 +1,15 @@
 module "chd_fe_profile" {
-  source = "git@github.com:companieshouse/terraform-modules//aws/instance_profile?ref=tags/1.0.59"
+  source = "git@github.com:companieshouse/terraform-modules//aws/instance_profile?ref=tags/1.0.356"
 
   name       = "chd-frontend-profile"
-  enable_SSM = true
+  # enable_SSM = true
   cw_log_group_arns = length(local.fe_log_groups) > 0 ? [format(
     "arn:aws:logs:%s:%s:log-group:%s-fe-*:*",
     var.aws_region,
     data.aws_caller_identity.current.account_id,
     var.application
   )] : null
-  instance_asg_arns = [module.fe_asg.this_autoscaling_group_arn]
+  instance_asg_arns = [module.fe_asg.autoscaling_group_arn]
   kms_key_refs = [
     "alias/${var.account}/${var.region}/ebs",
     local.ssm_kms_key_id,
@@ -43,10 +43,10 @@ module "chd_fe_profile" {
 }
 
 module "chd_bep_profile" {
-  source = "git@github.com:companieshouse/terraform-modules//aws/instance_profile?ref=tags/1.0.59"
+  source = "git@github.com:companieshouse/terraform-modules//aws/instance_profile?ref=tags/1.0.356"
 
   name       = "chd-backend-profile"
-  enable_SSM = true
+  # enable_SSM = true
   cw_log_group_arns = length(local.bep_log_groups) > 0 ? [format(
     "arn:aws:logs:%s:%s:log-group:%s-bep-*:*",
     var.aws_region,
@@ -54,7 +54,7 @@ module "chd_bep_profile" {
     var.application
   )] : null
   s3_buckets_write  = [local.session_manager_bucket_name]
-  instance_asg_arns = [module.bep_asg.this_autoscaling_group_arn]
+  instance_asg_arns = [module.bep_asg.autoscaling_group_arn]
   kms_key_refs = [
     "alias/${var.account}/${var.region}/ebs",
     local.ssm_kms_key_id,

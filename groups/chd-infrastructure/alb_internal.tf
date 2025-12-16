@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 module "chd_internal_alb_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "~> 3.0"
+  version = "5.3.1"
 
   name        = "sgr-${var.application}-internal-alb-001"
   description = "Security group for the ${var.application} web servers"
@@ -46,8 +46,8 @@ module "chd_internal_alb" {
   load_balancer_type         = "application"
   enable_deletion_protection = true
 
-  security_groups = [module.chd_internal_alb_security_group.this_security_group_id]
-  subnets         = data.aws_subnet_ids.web.ids
+  security_groups = [module.chd_internal_alb_security_group.security_group_id]
+  subnets         = data.aws_subnets.web.ids
 
   access_logs = {
     bucket  = local.elb_access_logs_bucket_name
@@ -104,20 +104,46 @@ module "chd_internal_alb" {
 
   tags = merge(
     local.default_tags,
-    map(
-      "ServiceTeam", "${upper(var.application)}-FE-Support"
-    )
+    tomap({
+      "ServiceTeam" = "${upper(var.application)}-FE-Support"
+    })
   )
 }
 
-#--------------------------------------------
-# Internal ALB CloudWatch Merics
-#--------------------------------------------
-module "internal_alb_metrics" {
-  source = "git@github.com:companieshouse/terraform-modules//aws/alb-metrics?ref=tags/1.0.26"
+# #--------------------------------------------
+# # Internal ALB CloudWatch Merics
+# #--------------------------------------------
+# module "internal_alb_metrics" {
+#   source = "git@github.com:companieshouse/terraform-modules//aws/alb-metrics?ref=tags/1.0.356"
 
-  load_balancer_id = module.chd_internal_alb.this_lb_id
-  target_group_ids = module.chd_internal_alb.target_group_arns
+#   load_balancer_id = module.chd_internal_alb.this_lb_id
+#   target_group_ids = module.chd_internal_alb.target_group_arns
 
-  depends_on = [module.chd_internal_alb]
+#   depends_on = [module.chd_internal_alb]
+# }
+
+#--------------------------------------------
+# Internal ALB CloudWatch Alarms
+#--------------------------------------------
+module "internal_alb_alarms" {
+  source = "git@github.com:companieshouse/terraform-modules//aws/alb-cloudwatch-alarms?ref=tags/1.0.357"
+
+  alb_arn_suffix            =  module.chd_internal_alb.lb_arn_suffix
+  target_group_arn_suffixes = module.chd_internal_alb.target_group_arn_suffixes
+
+  prefix                    = "chd-internal-"
+  response_time_threshold   = "100"
+  evaluation_periods        = "3"
+  statistic_period          = "60"
+  maximum_4xx_threshold     = "2"
+  maximum_5xx_threshold     = "2"
+  unhealthy_hosts_threshold = "1"
+
+  actions_alarm = var.enable_sns_topic ? [module.cloudwatch_sns_notifications[0].sns_topic_arn] : []
+  actions_ok    = var.enable_sns_topic ? [module.cloudwatch_sns_notifications[0].sns_topic_arn] : []
+
+  depends_on = [
+    module.cloudwatch_sns_notifications,
+    module.chd_internal_alb
+  ]
 }

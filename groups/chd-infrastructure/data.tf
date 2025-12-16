@@ -6,32 +6,78 @@ data "aws_vpc" "vpc" {
   }
 }
 
-data "aws_subnet_ids" "public" {
-  vpc_id = data.aws_vpc.vpc.id
+# data "aws_subnet_ids" "public" {
+#   vpc_id = data.aws_vpc.vpc.id
+#   filter {
+#     name   = "tag:Name"
+#     values = ["sub-public-*"]
+#   }
+# }
+data "aws_subnets" "public" {
+
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.vpc.id]
+  }
   filter {
     name   = "tag:Name"
     values = ["sub-public-*"]
   }
 }
 
-data "aws_subnet_ids" "web" {
-  vpc_id = data.aws_vpc.vpc.id
+# data "aws_subnet_ids" "web" {
+#   vpc_id = data.aws_vpc.vpc.id
+#   filter {
+#     name   = "tag:Name"
+#     values = ["sub-web-*"]
+#   }
+# }
+
+data "aws_subnets" "web" {
+
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.vpc.id]
+  }
   filter {
     name   = "tag:Name"
     values = ["sub-web-*"]
   }
 }
 
-data "aws_subnet_ids" "data" {
-  vpc_id = data.aws_vpc.vpc.id
+data "aws_subnets" "data" {
+
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.vpc.id]
+  }
   filter {
     name   = "tag:Name"
     values = ["sub-data-*"]
   }
 }
+# data "aws_subnet_ids" "data" {
+#   vpc_id = data.aws_vpc.vpc.id
+#   filter {
+#     name   = "tag:Name"
+#     values = ["sub-data-*"]
+#   }
+# }
 
-data "aws_subnet_ids" "application" {
-  vpc_id = data.aws_vpc.vpc.id
+# data "aws_subnet_ids" "application" {
+#   vpc_id = data.aws_vpc.vpc.id
+#   filter {
+#     name   = "tag:Name"
+#     values = ["sub-application-*"]
+#   }
+# }
+
+data "aws_subnets" "application" {
+
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.vpc.id]
+  }
   filter {
     name   = "tag:Name"
     values = ["sub-application-*"]
@@ -158,10 +204,10 @@ data "template_cloudinit_config" "fe_userdata_config" {
     content = templatefile("${path.module}/templates/fe_ftp_server.tpl", {
       int_passive_ports_start = var.fe_ftp_int_passive_ports_start
       int_passive_ports_end   = var.fe_ftp_int_passive_ports_end
-      internal_nlb_name       = module.nlb_fe_internal.this_lb_dns_name
+      internal_nlb_name       = module.nlb_fe_internal.lb_dns_name
       ext_passive_ports_start = var.fe_ftp_ext_passive_ports_start
       ext_passive_ports_end   = var.fe_ftp_ext_passive_ports_end
-      external_nlb_name       = module.nlb_fe_external.this_lb_dns_name
+      external_nlb_name       = module.nlb_fe_external.lb_dns_name
       root_dir                = var.fe_ftp_root_dir
     })
   }

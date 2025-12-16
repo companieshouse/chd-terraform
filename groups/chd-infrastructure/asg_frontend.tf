@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 module "chd_fe_asg_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "~> 3.0"
+  version = "5.3.1"
 
   name        = "sgr-${var.application}-fe-asg-001"
   description = "Security group for the ${var.application} frontend asg"
@@ -71,11 +71,11 @@ module "chd_fe_asg_security_group" {
   computed_ingress_with_source_security_group_id = [
     {
       rule                     = "http-80-tcp"
-      source_security_group_id = module.chd_internal_alb_security_group.this_security_group_id
+      source_security_group_id = module.chd_internal_alb_security_group.security_group_id
     },
     {
       rule                     = "http-80-tcp"
-      source_security_group_id = module.chd_external_alb_security_group.this_security_group_id
+      source_security_group_id = module.chd_external_alb_security_group.security_group_id
     }
   ]
   number_of_computed_ingress_with_source_security_group_id = 2
@@ -84,9 +84,9 @@ module "chd_fe_asg_security_group" {
 
   tags = merge(
     local.default_tags,
-    map(
-      "ServiceTeam", "${upper(var.application)}-FE-Support"
-    )
+    tomap({
+      "ServiceTeam" = "${upper(var.application)}-FE-Support"
+    })
   )
 }
 
@@ -99,9 +99,9 @@ resource "aws_cloudwatch_log_group" "chd_fe" {
 
   tags = merge(
     local.default_tags,
-    map(
-      "ServiceTeam", "${upper(var.application)}-FE-Support"
-    )
+    tomap({
+      "ServiceTeam" = "${upper(var.application)}-FE-Support"
+    })
   )
 }
 
@@ -114,7 +114,7 @@ resource "aws_autoscaling_schedule" "fe-schedule-stop" {
   max_size               = 0
   desired_capacity       = 0
   recurrence             = "00 20 * * 1-5" #Mon-Fri at 8pm
-  autoscaling_group_name = module.fe_asg.this_autoscaling_group_name
+  autoscaling_group_name = module.fe_asg.autoscaling_group_name
 }
 
 # ASG Scheduled Startup for non-production
@@ -126,7 +126,7 @@ resource "aws_autoscaling_schedule" "fe-schedule-start" {
   max_size               = var.fe_asg_max_size
   desired_capacity       = var.fe_asg_desired_capacity
   recurrence             = "00 06 * * 1-5" #Mon-Fri at 6am
-  autoscaling_group_name = module.fe_asg.this_autoscaling_group_name
+  autoscaling_group_name = module.fe_asg.autoscaling_group_name
 }
 
 # ASG Module
@@ -153,7 +153,7 @@ module "fe_asg" {
   ]
   # Auto scaling group
   asg_name                       = "${var.application}-fe-asg"
-  vpc_zone_identifier            = data.aws_subnet_ids.web.ids
+  vpc_zone_identifier            = data.aws_subnets.web.ids
 #  health_check_type              = "ELB"
   health_check_type              = "EC2"
   min_size                       = var.fe_asg_min_size
@@ -184,9 +184,9 @@ module "fe_asg" {
 
   tags_as_map = merge(
     local.default_tags,
-    map(
-      "ServiceTeam", "${upper(var.application)}-FE-Support"
-    )
+    tomap({
+      "ServiceTeam" = "${upper(var.application)}-FE-Support"
+    })
   )
 
   depends_on = [

@@ -1,9 +1,9 @@
 data "aws_network_interface" "nlb" {
-  for_each = data.aws_subnet_ids.application.ids
+  for_each = data.aws_subnets.application.ids
 
   filter {
     name   = "description"
-    values = ["ELB ${module.backend_nlb.this_lb_arn_suffix}"]
+    values = ["ELB ${module.backend_nlb.lb_arn_suffix}"]
 
   }
 
@@ -15,14 +15,14 @@ data "aws_network_interface" "nlb" {
 
 module "backend_nlb" {
   source  = "terraform-aws-modules/alb/aws"
-  version = "~> 5.0"
+  version = "8.7.0"
 
   name                       = "nlb-${var.application}-bep-001"
   vpc_id                     = data.aws_vpc.vpc.id
   internal                   = true
   load_balancer_type         = "network"
   enable_deletion_protection = true
-  subnets                    = data.aws_subnet_ids.application.ids
+  subnets                    = data.aws_subnets.application.ids
 
   http_tcp_listeners = [
     {
@@ -55,8 +55,8 @@ module "backend_nlb" {
 
   tags = merge(
     local.default_tags,
-    map(
-      "ServiceTeam", "${upper(var.application)}-BEP-Support"
-    )
+    tomap({
+      "ServiceTeam" = "${upper(var.application)}-BEP-Support"
+    })
   )
 }

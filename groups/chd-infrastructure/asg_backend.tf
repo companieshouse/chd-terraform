@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 module "chd_bep_asg_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "~> 3.0"
+  version = "5.3.1"
 
   name        = "sgr-${var.application}-bep-asg-001"
   description = "Security group for the ${var.application} backend asg"
@@ -30,9 +30,9 @@ module "chd_bep_asg_security_group" {
 
   tags = merge(
     local.default_tags,
-    map(
-      "ServiceTeam", "${upper(var.application)}-BEP-Support"
-    )
+    tomap({
+      "ServiceTeam" = "${upper(var.application)}-BEP-Support"
+    })
   )
 }
 
@@ -45,9 +45,9 @@ resource "aws_cloudwatch_log_group" "chd_bep" {
 
   tags = merge(
     local.default_tags,
-    map(
-      "ServiceTeam", "${upper(var.application)}-BEP-Support"
-    )
+    tomap({
+      "ServiceTeam" = "${upper(var.application)}-BEP-Support"
+    })
   )
 }
 
@@ -60,7 +60,7 @@ resource "aws_autoscaling_schedule" "bep-schedule-stop" {
   max_size               = 0
   desired_capacity       = 0
   recurrence             = "00 20 * * 1-5" #Mon-Fri at 8pm
-  autoscaling_group_name = module.bep_asg.this_autoscaling_group_name
+  autoscaling_group_name = module.bep_asg.autoscaling_group_name
 }
 
 # ASG Scheduled Startup
@@ -72,7 +72,7 @@ resource "aws_autoscaling_schedule" "bep-schedule-start" {
   max_size               = var.bep_asg_max_size
   desired_capacity       = var.bep_asg_desired_capacity
   recurrence             = "00 06 * * 1-5" #Mon-Fri at 6am
-  autoscaling_group_name = module.bep_asg.this_autoscaling_group_name
+  autoscaling_group_name = module.bep_asg.autoscaling_group_name
 }
 
 # ASG Module
@@ -85,7 +85,7 @@ module "bep_asg" {
   image_id      = data.aws_ami.chd_bep_ami.id
   instance_type = var.bep_instance_size
   security_groups = [
-    module.chd_bep_asg_security_group.this_security_group_id,
+    module.chd_bep_asg_security_group.security_group_id,
     data.aws_security_group.nagios_shared.id
   ]
   root_block_device = [
@@ -99,7 +99,7 @@ module "bep_asg" {
   ]
   # Auto scaling group
   asg_name                       = "${var.application}-bep-asg"
-  vpc_zone_identifier            = data.aws_subnet_ids.application.ids
+  vpc_zone_identifier            = data.aws_subnets.application.ids
   health_check_type              = "ELB"
   min_size                       = var.bep_asg_min_size
   max_size                       = var.bep_asg_max_size
@@ -118,9 +118,9 @@ module "bep_asg" {
 
   tags_as_map = merge(
     local.default_tags,
-    map(
-      "ServiceTeam", "${upper(var.application)}-BEP-Support"
-    )
+    tomap({
+      "ServiceTeam" = "${upper(var.application)}-BEP-Support"
+    })
   )
 }
 
