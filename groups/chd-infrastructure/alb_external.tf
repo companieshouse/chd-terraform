@@ -23,7 +23,7 @@ module "chd_external_alb_security_group" {
 #--------------------------------------------
 module "chd_external_alb" {
   source  = "terraform-aws-modules/alb/aws"
-  version = "8.7.0"
+  version = "6.7.0"
 
   name                       = "alb-${var.application}-external-001"
   vpc_id                     = data.aws_vpc.vpc.id
@@ -121,7 +121,7 @@ module "chd_external_alb" {
 module "external_alb_alarms" {
   source = "git@github.com:companieshouse/terraform-modules//aws/alb-cloudwatch-alarms?ref=tags/1.0.357"
 
-  alb_arn_suffix            =  module.chd_external_alb.lb_arn_suffix
+  alb_arn_suffix            = module.chd_external_alb.lb_arn
   target_group_arn_suffixes = module.chd_external_alb.target_group_arn_suffixes
 
   prefix                    = "chd-external-"

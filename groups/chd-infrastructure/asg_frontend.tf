@@ -114,7 +114,7 @@ resource "aws_autoscaling_schedule" "fe-schedule-stop" {
   max_size               = 0
   desired_capacity       = 0
   recurrence             = "00 20 * * 1-5" #Mon-Fri at 8pm
-  autoscaling_group_name = module.fe_asg.autoscaling_group_name
+  autoscaling_group_name = module.fe_asg.this_autoscaling_group_name
 }
 
 # ASG Scheduled Startup for non-production
@@ -126,12 +126,12 @@ resource "aws_autoscaling_schedule" "fe-schedule-start" {
   max_size               = var.fe_asg_max_size
   desired_capacity       = var.fe_asg_desired_capacity
   recurrence             = "00 06 * * 1-5" #Mon-Fri at 6am
-  autoscaling_group_name = module.fe_asg.autoscaling_group_name
+  autoscaling_group_name = module.fe_asg.this_autoscaling_group_name
 }
 
 # ASG Module
 module "fe_asg" {
-  source = "git@github.com:companieshouse/terraform-modules//aws/terraform-aws-autoscaling?ref=tags/1.0.36"
+  source = "git@github.com:companieshouse/terraform-modules//aws/terraform-aws-autoscaling?ref=tags/1.0.360"
 
   name = "${var.application}-webserver"
   # Launch configuration
@@ -139,7 +139,7 @@ module "fe_asg" {
   image_id      = data.aws_ami.chd_fe_ami.id
   instance_type = var.fe_instance_size
   security_groups = [
-    module.chd_fe_asg_security_group.this_security_group_id,
+    module.chd_fe_asg_security_group.security_group_owner_id,
     data.aws_security_group.nagios_shared.id
   ]
   root_block_device = [

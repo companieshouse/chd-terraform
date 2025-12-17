@@ -38,7 +38,7 @@ module "chd_internal_alb_security_group" {
 #--------------------------------------------
 module "chd_internal_alb" {
   source  = "terraform-aws-modules/alb/aws"
-  version = "~> 5.16.0"
+  version = "6.7.0"
 
   name                       = "alb-${var.application}-internal-001"
   vpc_id                     = data.aws_vpc.vpc.id
@@ -128,7 +128,7 @@ module "chd_internal_alb" {
 module "internal_alb_alarms" {
   source = "git@github.com:companieshouse/terraform-modules//aws/alb-cloudwatch-alarms?ref=tags/1.0.357"
 
-  alb_arn_suffix            =  module.chd_internal_alb.lb_arn_suffix
+  alb_arn_suffix            = module.chd_internal_alb.lb_arn
   target_group_arn_suffixes = module.chd_internal_alb.target_group_arn_suffixes
 
   prefix                    = "chd-internal-"

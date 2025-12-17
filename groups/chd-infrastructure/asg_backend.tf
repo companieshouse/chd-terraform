@@ -60,7 +60,7 @@ resource "aws_autoscaling_schedule" "bep-schedule-stop" {
   max_size               = 0
   desired_capacity       = 0
   recurrence             = "00 20 * * 1-5" #Mon-Fri at 8pm
-  autoscaling_group_name = module.bep_asg.autoscaling_group_name
+  autoscaling_group_name = module.bep_asg.this_autoscaling_group_name
 }
 
 # ASG Scheduled Startup
@@ -72,12 +72,12 @@ resource "aws_autoscaling_schedule" "bep-schedule-start" {
   max_size               = var.bep_asg_max_size
   desired_capacity       = var.bep_asg_desired_capacity
   recurrence             = "00 06 * * 1-5" #Mon-Fri at 6am
-  autoscaling_group_name = module.bep_asg.autoscaling_group_name
+  autoscaling_group_name = module.bep_asg.this_autoscaling_group_name
 }
 
 # ASG Module
 module "bep_asg" {
-  source = "git@github.com:companieshouse/terraform-modules//aws/terraform-aws-autoscaling?ref=tags/1.0.36"
+  source = "git@github.com:companieshouse/terraform-modules//aws/terraform-aws-autoscaling?ref=tags/1.0.360"
 
   name = "${var.application}-bep"
   # Launch configuration

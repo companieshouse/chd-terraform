@@ -1,5 +1,5 @@
 data "aws_network_interface" "nlb_fe_internal" {
-  for_each = data.aws_subnets.web.ids
+  for_each = toset(data.aws_subnets.web.ids)
 
   filter {
     name   = "description"
