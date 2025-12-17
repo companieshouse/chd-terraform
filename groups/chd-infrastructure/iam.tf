@@ -1,5 +1,5 @@
 module "chd_fe_profile" {
-  source = "git@github.com:companieshouse/terraform-modules//aws/instance_profile?ref=tags/1.0.356"
+  source = "git@github.com:companieshouse/terraform-modules//aws/instance_profile?ref=tags/1.0.360"
 
   name       = "chd-frontend-profile"
   enable_ssm = true
@@ -43,7 +43,7 @@ module "chd_fe_profile" {
 }
 
 module "chd_bep_profile" {
-  source = "git@github.com:companieshouse/terraform-modules//aws/instance_profile?ref=tags/1.0.356"
+  source = "git@github.com:companieshouse/terraform-modules//aws/instance_profile?ref=tags/1.0.360"
 
   name       = "chd-backend-profile"
   enable_ssm = true

@@ -7,25 +7,27 @@ Deploys resources required for the CHD backend processes
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.0, < 0.14 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 0.3, < 4.0 |
-| <a name="requirement_vault"></a> [vault](#requirement\_vault) | >= 2.0.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0, < 2.0.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.0.0, < 6.0.0 |
+| <a name="requirement_vault"></a> [vault](#requirement\_vault) | >= 4.0, < 5.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 0.3, < 4.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= >= 5.0.0, < 6.0.0 |
 | <a name="provider_template"></a> [template](#provider\_template) | n/a |
-| <a name="provider_vault"></a> [vault](#provider\_vault) | >= 2.0.0 |
+| <a name="provider_vault"></a> [vault](#provider\_vault) | >= 4.0, < 5.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_bep_asg"></a> [bep\_asg](#module\_bep\_asg) | terraform-modules/aws/terraform-aws-autoscaling | 1.0.36 |
-| <a name="module_chd_bep_asg_security_group"></a> [chd\_bep\_asg\_security\_group](#module\_chd\_bep\_asg\_security\_group) | terraform-aws-modules/security-group/aws | ~> 3.0 |
-| <a name="module_chd_bep_profile"></a> [chd\_bep\_profile](#module\_chd\_bep\_profile) | terraform-modules/aws/instance_profile | 1.0.59 |
+| <a name="module_bep_asg"></a> [bep\_asg](#module\_bep\_asg) | terraform-modules/aws/terraform-aws-autoscaling | 1.0.360 |
+| <a name="module_chd_bep_asg_security_group"></a> [chd\_bep\_asg\_security\_group](#module\_chd\_bep\_asg\_security\_group) | terraform-aws-modules/security-group/aws | 5.3.1 |
+| <a name="module_chd_bep_profile"></a> [chd\_bep\_profile](#module\_chd\_bep\_profile) | terraform-modules/aws/instance_profile | 1.0.360 |
+| <a name="module_external_alb_alarms"></a> [external\_alb\_alarms](#module\_external\_alb\_alarms) | terraform-modules/aws/terraform-alb-cloudwatch-alarms | 1.0.357 |
+| <a name="module_internal_alb_alarms"></a> [internal\_alb\_alarms](#module\_internal\_alb\_alarms) | terraform-modules/aws/terraform-alb-cloudwatch-alarms | 1.0.357 |
 
 ## Resources
 
@@ -38,8 +40,8 @@ Deploys resources required for the CHD backend processes
 | [aws_ami.chd_bep](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_security_group.nagios_shared](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/security_group) | data source |
-| [aws_subnet_ids.application](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnet_ids) | data source |
-| [aws_subnet_ids.data](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnet_ids) | data source |
+| [aws_subnets.application](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnets) | data source |
+| [aws_subnets.data](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnets) | data source |
 | [aws_vpc.vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc) | data source |
 | [template_cloudinit_config.bep_userdata_config](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/cloudinit_config) | data source |
 | [template_file.bep_userdata](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
