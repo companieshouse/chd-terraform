@@ -175,7 +175,7 @@ data "aws_ami" "chd_fe_ami" {
 # CHD Frontend Data
 # ------------------------------------------------------------------------------
 data "aws_security_group" "identity_gateway" {
-  name  = "identity-gateway-instance"
+  name = "identity-gateway-instance"
 }
 
 data "vault_generic_secret" "chd_fe_data" {
@@ -186,12 +186,12 @@ data "template_file" "fe_userdata" {
   template = file("${path.module}/templates/fe_user_data.tpl")
 
   vars = {
-    REGION                    = var.aws_region
-    HERITAGE_ENVIRONMENT      = title(var.environment)
-    APP_VERSION               = var.fe_app_release_version
-    CHD_FRONTEND_INPUTS_PATH  = "${local.parameter_store_path_prefix}/frontend_inputs"
-    ANSIBLE_INPUTS_PATH       = "${local.parameter_store_path_prefix}/frontend_ansible_inputs"
-    ONLINE_MOUNT_PATH         = var.fe_online_mount_path
+    REGION                   = var.aws_region
+    HERITAGE_ENVIRONMENT     = title(var.environment)
+    APP_VERSION              = var.fe_app_release_version
+    CHD_FRONTEND_INPUTS_PATH = "${local.parameter_store_path_prefix}/frontend_inputs"
+    ANSIBLE_INPUTS_PATH      = "${local.parameter_store_path_prefix}/frontend_ansible_inputs"
+    ONLINE_MOUNT_PATH        = var.fe_online_mount_path
   }
 }
 

@@ -15,7 +15,7 @@ module "chd_internal_alb_security_group" {
     local.test_cidrs
   )
 
-  ingress_rules       = ["http-80-tcp", "https-443-tcp"]
+  ingress_rules = ["http-80-tcp", "https-443-tcp"]
 
   ingress_with_cidr_blocks = local.fe_alb_app_access
 
@@ -110,21 +110,6 @@ module "chd_internal_alb" {
   )
 }
 
-# #--------------------------------------------
-# # Internal ALB CloudWatch Merics
-# #--------------------------------------------
-# module "internal_alb_metrics" {
-#   source = "git@github.com:companieshouse/terraform-modules//aws/alb-metrics?ref=tags/1.0.356"
-
-#   load_balancer_id = module.chd_internal_alb.this_lb_id
-#   target_group_ids = module.chd_internal_alb.target_group_arns
-
-#   depends_on = [module.chd_internal_alb]
-# }
-
-#--------------------------------------------
-# Internal ALB CloudWatch Alarms
-#--------------------------------------------
 module "internal_alb_alarms" {
   source = "git@github.com:companieshouse/terraform-modules//aws/alb-cloudwatch-alarms?ref=tags/1.0.357"
 

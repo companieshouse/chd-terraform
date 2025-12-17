@@ -22,7 +22,7 @@ module "nlb_fe_internal" {
   load_balancer_type         = "network"
   enable_deletion_protection = true
 
-  subnets                    = data.aws_subnets.web.ids
+  subnets = data.aws_subnets.web.ids
 
   http_tcp_listeners = concat([
     {
@@ -40,19 +40,19 @@ module "nlb_fe_internal" {
       protocol           = "TCP"
       target_group_index = 2
     }
-  ],
+    ],
   local.chd_fe_ftp_int_passive_listeners)
 
   target_groups = concat([
     {
-      name                 = "tg-${var.application}-fe-internal-alb-001"
-      backend_protocol     = "TCP"
-      backend_port         = 80
-      target_type          = "alb"
+      name             = "tg-${var.application}-fe-internal-alb-001"
+      backend_protocol = "TCP"
+      backend_port     = 80
+      target_type      = "alb"
       targets = [
         {
-          target_id        =  module.chd_internal_alb.lb_arn
-          port             = 80
+          target_id = module.chd_internal_alb.lb_arn
+          port      = 80
         }
       ]
       health_check = {
@@ -68,14 +68,14 @@ module "nlb_fe_internal" {
       }
     },
     {
-      name                 = "tg-${var.application}-fe-internal-alb-002"
-      backend_protocol     = "TCP"
-      backend_port         = 443
-      target_type          = "alb"
+      name             = "tg-${var.application}-fe-internal-alb-002"
+      backend_protocol = "TCP"
+      backend_port     = 443
+      target_type      = "alb"
       targets = [
         {
-          target_id        =  module.chd_internal_alb.lb_arn
-          port             = 443
+          target_id = module.chd_internal_alb.lb_arn
+          port      = 443
         }
       ]
       health_check = {
@@ -108,7 +108,7 @@ module "nlb_fe_internal" {
         InstanceTargetGroupTag = var.application
       }
     }
-  ],
+    ],
   local.chd_fe_internal_ftp_passive_tgs)
 
   tags = merge(

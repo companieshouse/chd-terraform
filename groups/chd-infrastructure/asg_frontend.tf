@@ -152,9 +152,9 @@ module "fe_asg" {
     },
   ]
   # Auto scaling group
-  asg_name                       = "${var.application}-fe-asg"
-  vpc_zone_identifier            = data.aws_subnets.web.ids
-#  health_check_type              = "ELB"
+  asg_name            = "${var.application}-fe-asg"
+  vpc_zone_identifier = data.aws_subnets.web.ids
+  #  health_check_type              = "ELB"
   health_check_type              = "EC2"
   min_size                       = var.fe_asg_min_size
   max_size                       = var.fe_asg_max_size
@@ -167,7 +167,7 @@ module "fe_asg" {
   refresh_triggers               = ["launch_configuration"]
   key_name                       = aws_key_pair.chd_keypair.key_name
   termination_policies           = ["OldestLaunchConfiguration"]
-  target_group_arns              = concat(
+  target_group_arns = concat(
     module.chd_external_alb.target_group_arns,
     module.chd_internal_alb.target_group_arns,
     flatten(
@@ -179,8 +179,8 @@ module "fe_asg" {
     )
   )
 
-  iam_instance_profile           = module.chd_fe_profile.aws_iam_instance_profile.name
-  user_data_base64               = data.template_cloudinit_config.fe_userdata_config.rendered
+  iam_instance_profile = module.chd_fe_profile.aws_iam_instance_profile.name
+  user_data_base64     = data.template_cloudinit_config.fe_userdata_config.rendered
 
   tags_as_map = merge(
     local.default_tags,
