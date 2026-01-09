@@ -13,6 +13,9 @@ locals {
     Account   = var.aws_account
   }
 
+  chd_user      = "chd"
+  finance_gid   = "1003"
+  finance_group = "e5fsadmin"
   # ------------------------------------------------------------------------------
   # CHD Common
   # ------------------------------------------------------------------------------
@@ -139,8 +142,10 @@ locals {
     heritage_environment       = var.environment
     version                    = var.bep_app_release_version
     default_nfs_server_address = var.nfs_server
+    finance_nfs_server_address = var.nfs_finance_server
     mounts_parent_dir          = var.nfs_mount_destination_parent_dir
     mounts                     = var.nfs_mounts
+    finance_mounts             = var.nfs_finance_mounts
     region                     = var.aws_region
     cw_log_files               = local.bep_cw_logs
     cw_agent_user              = "root"
@@ -148,14 +153,24 @@ locals {
 
   parameter_store_path_prefix = "/${var.application}/${var.environment}"
 
-  parameter_store_secrets = {
-    frontend_inputs         = local.chd_fe_data
-    frontend_ansible_inputs = jsonencode(local.chd_fe_ansible_inputs)
-    backend_inputs          = local.chd_bep_data
-    backend_ansible_inputs  = jsonencode(local.chd_bep_ansible_inputs)
-    chd_cron_entries        = base64gzip(data.template_file.chd_cron_file.rendered)
-    bulkdata_cron_entries   = base64gzip(data.template_file.bulkdata_cron_file.rendered)
-  }
+  bep_finance_nfs_parameter_store_secrets = var.bep_mount_finance_nfs_share ? {
+    backend_finance_mount = base64gzip(data.template_file.finance_fstab_entry[0].rendered)
+    backend_chd_user      = local.chd_user
+    backend_finance_gid   = local.finance_gid
+    backend_finance_group = local.finance_group
+  } : {}
+
+  parameter_store_secrets = merge(
+    {
+      frontend_inputs         = local.chd_fe_data
+      frontend_ansible_inputs = jsonencode(local.chd_fe_ansible_inputs)
+      backend_inputs          = local.chd_bep_data
+      backend_ansible_inputs  = jsonencode(local.chd_bep_ansible_inputs)
+      chd_cron_entries        = base64gzip(data.template_file.chd_cron_file.rendered)
+      bulkdata_cron_entries   = base64gzip(data.template_file.bulkdata_cron_file.rendered)
+    },
+    local.bep_finance_nfs_parameter_store_secrets
+  )
 
   bep_s3_read_buckets = jsondecode(local.chd_ec2_data["bep-s3-read-buckets"])
   bep_s3_read_buckets_arn_list = length(local.bep_s3_read_buckets) > 0 ? flatten([
