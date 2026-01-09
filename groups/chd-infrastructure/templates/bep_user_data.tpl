@@ -11,6 +11,16 @@ $${GET_PARAM_COMMAND} '${CHD_CRON_ENTRIES_PATH}' | base64 -d | gunzip > /root/ch
 crontab -u chd /root/chd_cronfile
 $${GET_PARAM_COMMAND} '${BULKDATA_CRON_ENTRIES_PATH}' | base64 -d | gunzip > /root/bulkdata_cronfile
 crontab -u bulkdata /root/bulkdata_cronfile
+#Add finance mount and group to staging and live here as we can't use RHEL6 base ami anymore to get the ansible to work
+CHD_ENV="${HERITAGE_ENVIRONMENT}"
+if [[ "$${CHD_ENV}" == 'Staging' ]] || [[ "$${CHD_ENV}" == 'Live' ]]; then
+FINANCE_GID=$($${GET_PARAM_COMMAND} '${FINANCE_BE_GID}')
+FINANCE_GROUP=$($${GET_PARAM_COMMAND} '${FINANCE_BE_GROUP}')
+CHD_USER=$($${GET_PARAM_COMMAND} '${CHD_BE_USER}')
+groupadd -g $FINANCE_GID $FINANCE_GROUP
+usermod -a -G $FINANCE_GID $CHD_USER
+mkdir -p /mnt/nfs/e5_upload > /dev/null
+$${GET_PARAM_COMMAND} '${CHD_FINANCE_MOUNT_PATH}' | base64 -d | gunzip >> /etc/fstab
 #Set DATABASE environment variable
 echo "export DATABASE=ORACLE" >> /home/chd/.bash_profile
 #Update Nagios registration script with relevant template
