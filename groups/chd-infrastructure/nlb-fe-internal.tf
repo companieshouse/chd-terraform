@@ -113,8 +113,8 @@ module "nlb_fe_internal" {
 
   tags = merge(
     local.default_tags,
-    tomap({
+    {
       "ServiceTeam" = "${upper(var.application)}-FE-Support"
-    })
+    }
   )
 }

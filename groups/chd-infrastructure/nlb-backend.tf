@@ -55,8 +55,8 @@ module "backend_nlb" {
 
   tags = merge(
     local.default_tags,
-    tomap({
+    {
       "ServiceTeam" = "${upper(var.application)}-BEP-Support"
-    })
+    }
   )
 }

@@ -84,9 +84,9 @@ module "chd_fe_asg_security_group" {
 
   tags = merge(
     local.default_tags,
-    tomap({
+    {
       "ServiceTeam" = "${upper(var.application)}-FE-Support"
-    })
+    }
   )
 }
 
@@ -99,9 +99,9 @@ resource "aws_cloudwatch_log_group" "chd_fe" {
 
   tags = merge(
     local.default_tags,
-    tomap({
+    {
       "ServiceTeam" = "${upper(var.application)}-FE-Support"
-    })
+    }
   )
 }
 
@@ -184,9 +184,9 @@ module "fe_asg" {
 
   tags_as_map = merge(
     local.default_tags,
-    tomap({
+    {
       "ServiceTeam" = "${upper(var.application)}-FE-Support"
-    })
+    }
   )
 
   depends_on = [

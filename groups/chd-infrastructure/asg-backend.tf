@@ -30,9 +30,9 @@ module "chd_bep_asg_security_group" {
 
   tags = merge(
     local.default_tags,
-    tomap({
+    {
       "ServiceTeam" = "${upper(var.application)}-BEP-Support"
-    })
+    }
   )
 }
 
@@ -45,9 +45,9 @@ resource "aws_cloudwatch_log_group" "chd_bep" {
 
   tags = merge(
     local.default_tags,
-    tomap({
+    {
       "ServiceTeam" = "${upper(var.application)}-BEP-Support"
-    })
+    }
   )
 }
 
@@ -118,8 +118,8 @@ module "bep_asg" {
 
   tags_as_map = merge(
     local.default_tags,
-    tomap({
+    {
       "ServiceTeam" = "${upper(var.application)}-BEP-Support"
-    })
+    }
   )
 }

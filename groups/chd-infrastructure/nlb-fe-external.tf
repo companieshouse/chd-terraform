@@ -108,13 +108,13 @@ module "nlb_fe_external" {
         InstanceTargetGroupTag = var.application
       }
     },
-    ],
+  ],
   local.chd_fe_external_ftp_passive_tgs)
 
   tags = merge(
     local.default_tags,
-    tomap({
+    {
       "ServiceTeam" = "${upper(var.application)}-FE-Support"
-    })
+    }
   )
 }

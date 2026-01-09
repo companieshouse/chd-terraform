@@ -104,16 +104,16 @@ module "chd_internal_alb" {
 
   tags = merge(
     local.default_tags,
-    tomap({
+    {
       "ServiceTeam" = "${upper(var.application)}-FE-Support"
-    })
+    }
   )
 }
 
 module "internal_alb_alarms" {
   source = "git@github.com:companieshouse/terraform-modules//aws/alb-cloudwatch-alarms?ref=tags/1.0.357"
 
-  alb_arn_suffix            = module.chd_internal_alb.lb_arn
+  alb_arn_suffix            = module.chd_internal_alb.lb_arn_suffix
   target_group_arn_suffixes = module.chd_internal_alb.target_group_arn_suffixes
 
   prefix                    = "chd-internal-"
