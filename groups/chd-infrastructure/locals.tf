@@ -13,9 +13,12 @@ locals {
     Account   = var.aws_account
   }
 
-# ------------------------------------------------------------------------------
-# CHD Common
-# ------------------------------------------------------------------------------
+  chd_user      = "chd"
+  finance_gid   = "1003"
+  finance_group = "e5fsadmin"
+  # ------------------------------------------------------------------------------
+  # CHD Common
+  # ------------------------------------------------------------------------------
   chd_ec2_data = data.vault_generic_secret.chd_ec2_data.data
   s3_releases  = data.vault_generic_secret.s3_releases.data
 
@@ -31,12 +34,12 @@ locals {
   elb_access_logs_bucket_name = local.security_s3_data["elb-access-logs-bucket-name"]
   elb_access_logs_prefix      = "elb-access-logs"
 
-# ------------------------------------------------------------------------------
-# CHD Frontend
-# ------------------------------------------------------------------------------
+  # ------------------------------------------------------------------------------
+  # CHD Frontend
+  # ------------------------------------------------------------------------------
   chd_fe_data = data.vault_generic_secret.chd_fe_data.data_json
 
-  fe_cw_logs = { for log, map in var.fe_cw_logs : log => merge(map, { "log_group_name" = "${var.application}-fe-${log}" }) }
+  fe_cw_logs    = { for log, map in var.fe_cw_logs : log => merge(map, { "log_group_name" = "${var.application}-fe-${log}" }) }
   fe_log_groups = compact([for log, map in local.fe_cw_logs : lookup(map, "log_group_name", "")])
 
   fe_alb_app_access = length(var.fe_access_cidrs) != 0 ? [
@@ -55,14 +58,14 @@ locals {
   # Generate listener configuration for FTP passive ports
   chd_fe_ftp_int_passive_listeners = [
     for num in range(var.fe_ftp_int_passive_ports_start, var.fe_ftp_int_passive_ports_end + 1) : {
-      port               = format("%d", num)
-      protocol           = "TCP"
+      port     = format("%d", num)
+      protocol = "TCP"
     }
   ]
   chd_fe_ftp_ext_passive_listeners = [
     for num in range(var.fe_ftp_ext_passive_ports_start, var.fe_ftp_ext_passive_ports_end + 1) : {
-      port               = format("%d", num)
-      protocol           = "TCP"
+      port     = format("%d", num)
+      protocol = "TCP"
     }
   ]
 
@@ -124,12 +127,12 @@ locals {
     cw_agent_user              = "root"
   }
 
-# ------------------------------------------------------------------------------
-# CHD BEP
-# ------------------------------------------------------------------------------
+  # ------------------------------------------------------------------------------
+  # CHD BEP
+  # ------------------------------------------------------------------------------
   chd_bep_data = data.vault_generic_secret.chd_bep_data.data_json
 
-  bep_cw_logs = { for log, map in var.bep_cw_logs : log => merge(map, { "log_group_name" = "${var.application}-bep-${log}" }) }
+  bep_cw_logs    = { for log, map in var.bep_cw_logs : log => merge(map, { "log_group_name" = "${var.application}-bep-${log}" }) }
   bep_log_groups = compact([for log, map in local.bep_cw_logs : lookup(map, "log_group_name", "")])
 
   chd_bep_ansible_inputs = {
@@ -138,25 +141,37 @@ locals {
     heritage_environment       = var.environment
     version                    = var.bep_app_release_version
     default_nfs_server_address = var.nfs_server
+    finance_nfs_server_address = var.nfs_finance_server
     mounts_parent_dir          = var.nfs_mount_destination_parent_dir
     mounts                     = var.nfs_mounts
+    finance_mounts             = var.nfs_finance_mounts
     region                     = var.aws_region
     cw_log_files               = local.bep_cw_logs
     cw_agent_user              = "root"
   }
 
   parameter_store_path_prefix = "/${var.application}/${var.environment}"
-  
-  parameter_store_secrets = {
-    frontend_inputs         = local.chd_fe_data
-    frontend_ansible_inputs = jsonencode(local.chd_fe_ansible_inputs)
-    backend_inputs          = local.chd_bep_data
-    backend_ansible_inputs  = jsonencode(local.chd_bep_ansible_inputs)
-    chd_cron_entries        = base64gzip(data.template_file.chd_cron_file.rendered)
-    bulkdata_cron_entries   = base64gzip(data.template_file.bulkdata_cron_file.rendered)
-  }
 
-  bep_s3_read_buckets          = jsondecode(local.chd_ec2_data["bep-s3-read-buckets"])
+  bep_finance_nfs_parameter_store_secrets = var.bep_mount_finance_nfs_share ? {
+    backend_finance_mount = base64gzip(data.template_file.finance_fstab_entry[0].rendered)
+    backend_chd_user      = local.chd_user
+    backend_finance_gid   = local.finance_gid
+    backend_finance_group = local.finance_group
+  } : {}
+
+  parameter_store_secrets = merge(
+    {
+      frontend_inputs         = local.chd_fe_data
+      frontend_ansible_inputs = jsonencode(local.chd_fe_ansible_inputs)
+      backend_inputs          = local.chd_bep_data
+      backend_ansible_inputs  = jsonencode(local.chd_bep_ansible_inputs)
+      chd_cron_entries        = base64gzip(data.template_file.chd_cron_file.rendered)
+      bulkdata_cron_entries   = base64gzip(data.template_file.bulkdata_cron_file.rendered)
+    },
+    local.bep_finance_nfs_parameter_store_secrets
+  )
+
+  bep_s3_read_buckets = jsondecode(local.chd_ec2_data["bep-s3-read-buckets"])
   bep_s3_read_buckets_arn_list = length(local.bep_s3_read_buckets) > 0 ? flatten([
     for bucket in local.bep_s3_read_buckets : [
       "arn:aws:s3:::${bucket}",
@@ -166,8 +181,8 @@ locals {
 
   bep_s3_read_buckets_iam_statement = length(local.bep_s3_read_buckets_arn_list) > 0 ? [
     {
-      sid    = "AllowS3ReadAccess",
-      effect = "Allow",
+      sid       = "AllowS3ReadAccess",
+      effect    = "Allow",
       resources = local.bep_s3_read_buckets_arn_list,
       actions = [
         "s3:Get*",
@@ -176,7 +191,7 @@ locals {
     }
   ] : []
 
-  bep_s3_write_buckets          = jsondecode(local.chd_ec2_data["bep-s3-write-buckets"])
+  bep_s3_write_buckets = jsondecode(local.chd_ec2_data["bep-s3-write-buckets"])
   bep_s3_write_buckets_arn_list = length(local.bep_s3_write_buckets) > 0 ? flatten([
     for bucket in local.bep_s3_write_buckets : [
       "arn:aws:s3:::${bucket}/*"
@@ -185,8 +200,8 @@ locals {
 
   bep_s3_write_buckets_iam_statement = length(local.bep_s3_write_buckets_arn_list) > 0 ? [
     {
-      sid    = "AllowS3WriteAccess"
-      effect = "Allow",
+      sid       = "AllowS3WriteAccess"
+      effect    = "Allow",
       resources = local.bep_s3_write_buckets_arn_list,
       actions = [
         "s3:PutObject*"

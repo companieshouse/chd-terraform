@@ -187,6 +187,12 @@ data "template_file" "bulkdata_cron_file" {
   template = file("${path.module}/templates/${var.aws_profile}/bulkdata_cron.tpl")
 }
 
+data "template_file" "finance_fstab_entry" {
+  count = var.bep_mount_finance_nfs_share ? 1 : 0
+
+  template = file("${path.module}/templates/${var.aws_profile}/finance_nfs.tpl")
+}
+
 data "template_file" "bep_userdata" {
   template = file("${path.module}/templates/bep_user_data.tpl")
 
@@ -198,6 +204,10 @@ data "template_file" "bep_userdata" {
     ANSIBLE_INPUTS_PATH        = "${local.parameter_store_path_prefix}/backend_ansible_inputs"
     CHD_CRON_ENTRIES_PATH      = "${local.parameter_store_path_prefix}/chd_cron_entries"
     BULKDATA_CRON_ENTRIES_PATH = "${local.parameter_store_path_prefix}/bulkdata_cron_entries"
+    CHD_FINANCE_MOUNT_PATH  = "${local.parameter_store_path_prefix}/backend_finance_mount"
+    CHD_BE_USER             = "${local.parameter_store_path_prefix}/backend_chd_user"
+    FINANCE_BE_GID          = "${local.parameter_store_path_prefix}/backend_finance_gid"
+    FINANCE_BE_GROUP        = "${local.parameter_store_path_prefix}/backend_finance_group"
   }
 }
 

@@ -131,7 +131,11 @@ bep_cw_logs = {
 
 # NFS Configuration
 nfs_server = "192.168.255.24"
+nfs_finance_server = "cvodata.staging.finance.aws.internal"
+
 nfs_mount_destination_parent_dir = "/-"
+nfs_finance_mount_destination_parent_dir = "/finance_staging_e5fs/data/"
+
 nfs_mounts = {
   # CVO Mounts
   chd_image = {
@@ -144,3 +148,9 @@ nfs_mounts = {
     local_mount_point = "/mnt/nfs/chd/post"
   }
 }
+
+nfs_finance_mounts = {
+  upload = {
+    local_mount_point = "/mnt/nfs/e5_upload"
+  }
+}  
