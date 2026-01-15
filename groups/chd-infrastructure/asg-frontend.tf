@@ -139,7 +139,7 @@ module "fe_asg" {
   image_id      = data.aws_ami.chd_fe_ami.id
   instance_type = var.fe_instance_size
   security_groups = [
-    module.chd_fe_asg_security_group.security_group_owner_id,
+    module.chd_fe_asg_security_group.security_group_id,
     data.aws_security_group.nagios_shared.id
   ]
   root_block_device = [
