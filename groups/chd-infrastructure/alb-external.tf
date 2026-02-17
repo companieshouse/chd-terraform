@@ -23,13 +23,14 @@ module "chd_external_alb_security_group" {
 #--------------------------------------------
 module "chd_external_alb" {
   source  = "terraform-aws-modules/alb/aws"
-  version = "6.7.0"
+  version = "8.7.0"
 
   name                       = "alb-${var.application}-external-001"
   vpc_id                     = data.aws_vpc.vpc.id
   internal                   = false
   load_balancer_type         = "application"
   enable_deletion_protection = true
+  create_security_group      = false
 
   security_groups = [module.chd_external_alb_security_group.security_group_id]
   subnets         = data.aws_subnets.public.ids

@@ -21,6 +21,7 @@ module "nlb_fe_external" {
   internal                   = false
   load_balancer_type         = "network"
   enable_deletion_protection = true
+  create_security_group      = false
 
   subnets = data.aws_subnets.public.ids
 

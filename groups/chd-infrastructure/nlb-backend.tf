@@ -23,6 +23,7 @@ module "backend_nlb" {
   load_balancer_type         = "network"
   enable_deletion_protection = true
   subnets                    = data.aws_subnets.application.ids
+  create_security_group      = false
 
   http_tcp_listeners = [
     {
