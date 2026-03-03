@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 module "chd_bep_asg_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "5.3.1"
+  version = "~> 5.0"
 
   name        = "sgr-${var.application}-bep-asg-001"
   description = "Security group for the ${var.application} backend asg"
@@ -114,7 +114,7 @@ module "bep_asg" {
   target_group_arns              = module.backend_nlb.target_group_arns
   termination_policies           = ["OldestLaunchConfiguration"]
   iam_instance_profile           = module.chd_bep_profile.aws_iam_instance_profile.name
-  user_data_base64               = data.template_cloudinit_config.bep_userdata_config.rendered
+  user_data_base64               = data.cloudinit_config.bep_userdata_config.rendered
 
   tags_as_map = merge(
     local.default_tags,

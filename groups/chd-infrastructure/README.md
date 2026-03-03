@@ -23,14 +23,14 @@ Deploys resources required for the CHD backend processes
 |------|--------|---------|
 | <a name="module_backend_nlb"></a> [backend\_nlb](#module\_backend\_nlb) | terraform-aws-modules/alb/aws | 8.7.0 |
 | <a name="module_bep_asg"></a> [bep\_asg](#module\_bep\_asg) | git@github.com:companieshouse/terraform-modules//aws/terraform-aws-autoscaling | tags/1.0.360 |
-| <a name="module_chd_bep_asg_security_group"></a> [chd\_bep\_asg\_security\_group](#module\_chd\_bep\_asg\_security\_group) | terraform-aws-modules/security-group/aws | 5.3.1 |
+| <a name="module_chd_bep_asg_security_group"></a> [chd\_bep\_asg\_security\_group](#module\_chd\_bep\_asg\_security\_group) | terraform-aws-modules/security-group/aws | 5.0 |
 | <a name="module_chd_bep_profile"></a> [chd\_bep\_profile](#module\_chd\_bep\_profile) | git@github.com:companieshouse/terraform-modules//aws/instance_profile | tags/1.0.360 |
 | <a name="module_chd_external_alb"></a> [chd\_external\_alb](#module\_chd\_external\_alb) | terraform-aws-modules/alb/aws | 6.7.0 |
-| <a name="module_chd_external_alb_security_group"></a> [chd\_external\_alb\_security\_group](#module\_chd\_external\_alb\_security\_group) | terraform-aws-modules/security-group/aws | 5.3.1 |
-| <a name="module_chd_fe_asg_security_group"></a> [chd\_fe\_asg\_security\_group](#module\_chd\_fe\_asg\_security\_group) | terraform-aws-modules/security-group/aws | 5.3.1 |
+| <a name="module_chd_external_alb_security_group"></a> [chd\_external\_alb\_security\_group](#module\_chd\_external\_alb\_security\_group) | terraform-aws-modules/security-group/aws | 5.0 |
+| <a name="module_chd_fe_asg_security_group"></a> [chd\_fe\_asg\_security\_group](#module\_chd\_fe\_asg\_security\_group) | terraform-aws-modules/security-group/aws | 5.0 |
 | <a name="module_chd_fe_profile"></a> [chd\_fe\_profile](#module\_chd\_fe\_profile) | git@github.com:companieshouse/terraform-modules//aws/instance_profile | tags/1.0.360 |
 | <a name="module_chd_internal_alb"></a> [chd\_internal\_alb](#module\_chd\_internal\_alb) | terraform-aws-modules/alb/aws | 6.7.0 |
-| <a name="module_chd_internal_alb_security_group"></a> [chd\_internal\_alb\_security\_group](#module\_chd\_internal\_alb\_security\_group) | terraform-aws-modules/security-group/aws | 5.3.1 |
+| <a name="module_chd_internal_alb_security_group"></a> [chd\_internal\_alb\_security\_group](#module\_chd\_internal\_alb\_security\_group) | terraform-aws-modules/security-group/aws | 5.0 |
 | <a name="module_cloudwatch_sns_notifications"></a> [cloudwatch\_sns\_notifications](#module\_cloudwatch\_sns\_notifications) | terraform-aws-modules/sns/aws | 3.3.0 |
 | <a name="module_external_alb_alarms"></a> [external\_alb\_alarms](#module\_external\_alb\_alarms) | git@github.com:companieshouse/terraform-modules//aws/alb-cloudwatch-alarms | tags/1.0.357 |
 | <a name="module_fe_asg"></a> [fe\_asg](#module\_fe\_asg) | git@github.com:companieshouse/terraform-modules//aws/terraform-aws-autoscaling | tags/1.0.360 |
@@ -67,8 +67,8 @@ Deploys resources required for the CHD backend processes
 | [aws_subnets.public](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnets) | data source |
 | [aws_subnets.web](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnets) | data source |
 | [aws_vpc.vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc) | data source |
-| [template_cloudinit_config.bep_userdata_config](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/cloudinit_config) | data source |
-| [template_cloudinit_config.fe_userdata_config](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/cloudinit_config) | data source |
+| [cloudinit_config.bep_userdata_config](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/cloudinit_config) | data source |
+| [cloudinit_config.fe_userdata_config](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/cloudinit_config) | data source |
 | [template_file.bep_userdata](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 | [template_file.bulkdata_cron_file](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 | [template_file.chd_cron_file](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |

@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 module "chd_internal_alb_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "5.3.1"
+  version = "~> 5.0"
 
   name        = "sgr-${var.application}-internal-alb-001"
   description = "Security group for the ${var.application} web servers"
