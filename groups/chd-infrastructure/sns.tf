@@ -4,7 +4,7 @@ module "cloudwatch_sns_notifications" {
   source  = "terraform-aws-modules/sns/aws"
   version = "6.2.1"
 
-  name_prefix       = "${var.application}-cloudwatch-"
+  name              = "${var.application}-cloudwatch-alarms"
   display_name      = "${var.application}-cloudwatch-alarms"
   kms_master_key_id = local.sns_kms_key_id
 
