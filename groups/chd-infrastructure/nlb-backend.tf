@@ -15,7 +15,7 @@ data "aws_network_interface" "nlb" {
 
 module "backend_nlb" {
   source  = "terraform-aws-modules/alb/aws"
-  version = "8.7.0"
+  version = "6.7.0"
 
   name                       = "nlb-${var.application}-bep-001"
   vpc_id                     = data.aws_vpc.vpc.id
@@ -23,7 +23,6 @@ module "backend_nlb" {
   load_balancer_type         = "network"
   enable_deletion_protection = true
   subnets                    = data.aws_subnets.application.ids
-  create_security_group      = false
 
   http_tcp_listeners = [
     {
@@ -57,6 +56,7 @@ module "backend_nlb" {
   tags = merge(
     local.default_tags,
     {
+      "Name"        = "nlb-${var.application}-bep-001"
       "ServiceTeam" = "${upper(var.application)}-BEP-Support"
     }
   )

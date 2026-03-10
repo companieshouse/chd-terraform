@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 module "chd_internal_alb_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "~> 5.0"
+  version = "5.3.1"
 
   name        = "sgr-${var.application}-internal-alb-001"
   description = "Security group for the ${var.application} web servers"
@@ -31,6 +31,10 @@ module "chd_internal_alb_security_group" {
   ]
 
   egress_rules = ["all-all"]
+
+  tags = {
+    "Name" = "sgr-${var.application}-internal-alb-001"
+  }
 }
 
 #--------------------------------------------
@@ -38,14 +42,13 @@ module "chd_internal_alb_security_group" {
 #--------------------------------------------
 module "chd_internal_alb" {
   source  = "terraform-aws-modules/alb/aws"
-  version = "8.7.0"
+  version = "6.7.0"
 
   name                       = "alb-${var.application}-internal-001"
   vpc_id                     = data.aws_vpc.vpc.id
   internal                   = true
   load_balancer_type         = "application"
   enable_deletion_protection = true
-  create_security_group      = false
 
   security_groups = [module.chd_internal_alb_security_group.security_group_id]
   subnets         = data.aws_subnets.web.ids
@@ -106,6 +109,7 @@ module "chd_internal_alb" {
   tags = merge(
     local.default_tags,
     {
+      "Name"         = "alb-${var.application}-internal-001"
       "ServiceTeam" = "${upper(var.application)}-FE-Support"
     }
   )

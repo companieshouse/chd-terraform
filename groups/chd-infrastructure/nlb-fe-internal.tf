@@ -14,14 +14,13 @@ data "aws_network_interface" "nlb_fe_internal" {
 
 module "nlb_fe_internal" {
   source  = "terraform-aws-modules/alb/aws"
-  version = "8.7.0"
+  version = "6.7.0"
 
   name                       = "nlb-${var.application}-fe-internal-001"
   vpc_id                     = data.aws_vpc.vpc.id
   internal                   = true
   load_balancer_type         = "network"
   enable_deletion_protection = true
-  create_security_group      = false
 
   subnets = data.aws_subnets.web.ids
 
@@ -115,6 +114,7 @@ module "nlb_fe_internal" {
   tags = merge(
     local.default_tags,
     {
+      "Name"        = "nlb-${var.application}-fe-internal-001"
       "ServiceTeam" = "${upper(var.application)}-FE-Support"
     }
   )

@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 module "chd_fe_asg_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "~> 5.0"
+  version = "5.3.1"
 
   name        = "sgr-${var.application}-fe-asg-001"
   description = "Security group for the ${var.application} frontend asg"
@@ -85,6 +85,7 @@ module "chd_fe_asg_security_group" {
   tags = merge(
     local.default_tags,
     {
+      "Name"        = "sgr-${var.application}-fe-asg-001"
       "ServiceTeam" = "${upper(var.application)}-FE-Support"
     }
   )
@@ -100,6 +101,7 @@ resource "aws_cloudwatch_log_group" "chd_fe" {
   tags = merge(
     local.default_tags,
     {
+      "Name"        = each.value["log_group_name"]
       "ServiceTeam" = "${upper(var.application)}-FE-Support"
     }
   )
@@ -185,6 +187,7 @@ module "fe_asg" {
   tags_as_map = merge(
     local.default_tags,
     {
+      "Name"        = "${var.application}-fe-asg"
       "ServiceTeam" = "${upper(var.application)}-FE-Support"
     }
   )

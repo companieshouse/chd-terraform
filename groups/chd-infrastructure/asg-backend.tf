@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 module "chd_bep_asg_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "~> 5.0"
+  version = "5.3.1"
 
   name        = "sgr-${var.application}-bep-asg-001"
   description = "Security group for the ${var.application} backend asg"
@@ -31,6 +31,7 @@ module "chd_bep_asg_security_group" {
   tags = merge(
     local.default_tags,
     {
+      "Name"        = "sgr-${var.application}-bep-asg-001"
       "ServiceTeam" = "${upper(var.application)}-BEP-Support"
     }
   )
@@ -46,6 +47,7 @@ resource "aws_cloudwatch_log_group" "chd_bep" {
   tags = merge(
     local.default_tags,
     {
+      "Name"        = each.value["log_group_name"]
       "ServiceTeam" = "${upper(var.application)}-BEP-Support"
     }
   )
@@ -119,6 +121,7 @@ module "bep_asg" {
   tags_as_map = merge(
     local.default_tags,
     {
+      "Name"        = "${var.application}-bep-asg"
       "ServiceTeam" = "${upper(var.application)}-BEP-Support"
     }
   )

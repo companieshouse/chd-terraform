@@ -11,6 +11,7 @@ module "cloudwatch_sns_notifications" {
   tags = merge(
     local.default_tags,
     {
+      "Name"       = "${var.application}-cloudwatch-alarms"
       ServiceTeam = "${upper(var.application)}-FE-Support"
     }
   )
