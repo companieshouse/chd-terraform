@@ -2,7 +2,7 @@ module "cloudwatch_sns_notifications" {
   count = var.enable_sns_topic ? 1 : 0
 
   source  = "terraform-aws-modules/sns/aws"
-  version = "6.2.1"
+  version = "3.3.0"
 
   name              = "${var.application}-cloudwatch-alarms"
   display_name      = "${var.application}-cloudwatch-alarms"
