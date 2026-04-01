@@ -63,17 +63,17 @@ fe_cw_logs = {
 
   "chd_access_log" = {
     file_path = "/etc/httpd/logs"
-    log_group_retention = 7
+    log_group_retention = 30
   }
 
   "chd_error_log" = {
     file_path = "/etc/httpd/logs"
-    log_group_retention = 7
+    log_group_retention = 30
   }
 
   "ftp_xfer_log" = {
     file_path = "/var/log/xferlog"
-    log_group_retention = 7
+    log_group_retention = 30
   }
 }
 
@@ -120,12 +120,12 @@ bep_cw_logs = {
 
   "backend.log" = {
     file_path = "/home/chd"
-    log_group_retention = 7
+    log_group_retention = 30
   }
 
   "weeding.log" = {
     file_path = "/home/chd"
-    log_group_retention = 7
+    log_group_retention = 30
   }
 }
 
