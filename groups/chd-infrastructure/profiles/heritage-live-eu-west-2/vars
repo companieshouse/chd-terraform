@@ -92,7 +92,7 @@ bep_cw_logs = {
 
   "yum.log" = {
     file_path = "/var/log"
-    log_group_retention = 0
+    log_group_retention = 30
   }
 
   "cron" = {
