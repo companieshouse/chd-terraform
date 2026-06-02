@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 module "chd_fe_asg_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "~> 3.0"
+  version = "5.3.1"
 
   name        = "sgr-${var.application}-fe-asg-001"
   description = "Security group for the ${var.application} frontend asg"
@@ -71,11 +71,11 @@ module "chd_fe_asg_security_group" {
   computed_ingress_with_source_security_group_id = [
     {
       rule                     = "http-80-tcp"
-      source_security_group_id = module.chd_internal_alb_security_group.this_security_group_id
+      source_security_group_id = module.chd_internal_alb_security_group.security_group_id
     },
     {
       rule                     = "http-80-tcp"
-      source_security_group_id = module.chd_external_alb_security_group.this_security_group_id
+      source_security_group_id = module.chd_external_alb_security_group.security_group_id
     }
   ]
   number_of_computed_ingress_with_source_security_group_id = 2
@@ -84,9 +84,10 @@ module "chd_fe_asg_security_group" {
 
   tags = merge(
     local.default_tags,
-    map(
-      "ServiceTeam", "${upper(var.application)}-FE-Support"
-    )
+    {
+      "Name"        = "sgr-${var.application}-fe-asg-001"
+      "ServiceTeam" = "${upper(var.application)}-FE-Support"
+    }
   )
 }
 
@@ -99,9 +100,10 @@ resource "aws_cloudwatch_log_group" "chd_fe" {
 
   tags = merge(
     local.default_tags,
-    map(
-      "ServiceTeam", "${upper(var.application)}-FE-Support"
-    )
+    {
+      "Name"        = each.value["log_group_name"]
+      "ServiceTeam" = "${upper(var.application)}-FE-Support"
+    }
   )
 }
 
@@ -131,7 +133,7 @@ resource "aws_autoscaling_schedule" "fe-schedule-start" {
 
 # ASG Module
 module "fe_asg" {
-  source = "git@github.com:companieshouse/terraform-modules//aws/terraform-aws-autoscaling?ref=tags/1.0.36"
+  source = "git@github.com:companieshouse/terraform-modules//aws/terraform-aws-autoscaling?ref=tags/1.0.360"
 
   name = "${var.application}-webserver"
   # Launch configuration
@@ -139,7 +141,7 @@ module "fe_asg" {
   image_id      = data.aws_ami.chd_fe_ami.id
   instance_type = var.fe_instance_size
   security_groups = [
-    module.chd_fe_asg_security_group.this_security_group_id,
+    module.chd_fe_asg_security_group.security_group_id,
     data.aws_security_group.nagios_shared.id
   ]
   root_block_device = [
@@ -152,9 +154,9 @@ module "fe_asg" {
     },
   ]
   # Auto scaling group
-  asg_name                       = "${var.application}-fe-asg"
-  vpc_zone_identifier            = data.aws_subnet_ids.web.ids
-#  health_check_type              = "ELB"
+  asg_name            = "${var.application}-fe-asg"
+  vpc_zone_identifier = data.aws_subnets.web.ids
+  #  health_check_type              = "ELB"
   health_check_type              = "EC2"
   min_size                       = var.fe_asg_min_size
   max_size                       = var.fe_asg_max_size
@@ -167,7 +169,7 @@ module "fe_asg" {
   refresh_triggers               = ["launch_configuration"]
   key_name                       = aws_key_pair.chd_keypair.key_name
   termination_policies           = ["OldestLaunchConfiguration"]
-  target_group_arns              = concat(
+  target_group_arns = concat(
     module.chd_external_alb.target_group_arns,
     module.chd_internal_alb.target_group_arns,
     flatten(
@@ -179,14 +181,15 @@ module "fe_asg" {
     )
   )
 
-  iam_instance_profile           = module.chd_fe_profile.aws_iam_instance_profile.name
-  user_data_base64               = data.template_cloudinit_config.fe_userdata_config.rendered
+  iam_instance_profile = module.chd_fe_profile.aws_iam_instance_profile.name
+  user_data_base64     = data.cloudinit_config.fe_userdata_config.rendered
 
   tags_as_map = merge(
     local.default_tags,
-    map(
-      "ServiceTeam", "${upper(var.application)}-FE-Support"
-    )
+    {
+      "Name"        = "${var.application}-fe-asg"
+      "ServiceTeam" = "${upper(var.application)}-FE-Support"
+    }
   )
 
   depends_on = [

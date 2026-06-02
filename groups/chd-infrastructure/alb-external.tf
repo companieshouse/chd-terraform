@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 module "chd_external_alb_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "~> 3.0"
+  version = "5.3.1"
 
   name        = "sgr-${var.application}-alb-001"
   description = "Security group for the ${var.application} web servers"
@@ -14,8 +14,12 @@ module "chd_external_alb_security_group" {
     formatlist("%s/32", [for eni in data.aws_network_interface.nlb_fe_external : eni.private_ip])
   )
 
-  ingress_rules       = ["http-80-tcp", "https-443-tcp"]
-  egress_rules        = ["all-all"]
+  ingress_rules = ["http-80-tcp", "https-443-tcp"]
+  egress_rules  = ["all-all"]
+
+  tags = {
+    "Name" = "sgr-${var.application}-alb-001"
+  }
 }
 
 #--------------------------------------------
@@ -23,7 +27,7 @@ module "chd_external_alb_security_group" {
 #--------------------------------------------
 module "chd_external_alb" {
   source  = "terraform-aws-modules/alb/aws"
-  version = "~> 5.16.0"
+  version = "6.7.0"
 
   name                       = "alb-${var.application}-external-001"
   vpc_id                     = data.aws_vpc.vpc.id
@@ -31,8 +35,8 @@ module "chd_external_alb" {
   load_balancer_type         = "application"
   enable_deletion_protection = true
 
-  security_groups = [module.chd_external_alb_security_group.this_security_group_id]
-  subnets         = data.aws_subnet_ids.public.ids
+  security_groups = [module.chd_external_alb_security_group.security_group_id]
+  subnets         = data.aws_subnets.public.ids
 
   access_logs = {
     bucket  = local.elb_access_logs_bucket_name
@@ -62,8 +66,8 @@ module "chd_external_alb" {
       target_group_index = 0
 
       # Enable fixed-response message
-      action_type        = "fixed-response"
-      fixed_response     = {
+      action_type = "fixed-response"
+      fixed_response = {
         content_type = "text/html"
         message_body = file("${path.module}/files/fe_alb_external_message_body.html")
         status_code  = "200"
@@ -97,20 +101,27 @@ module "chd_external_alb" {
 
   tags = merge(
     local.default_tags,
-    map(
-      "ServiceTeam", "${upper(var.application)}-FE-Support"
-    )
+    {
+      "Name"         = "alb-${var.application}-external-001"
+      "ServiceTeam" = "${upper(var.application)}-FE-Support"
+    }
   )
 }
 
-#--------------------------------------------
-# External ALB CloudWatch Merics
-#--------------------------------------------
-module "external_alb_metrics" {
-  source = "git@github.com:companieshouse/terraform-modules//aws/alb-metrics?ref=tags/1.0.26"
+module "external_alb_alarms" {
+  source = "git@github.com:companieshouse/terraform-modules//aws/alb-cloudwatch-alarms?ref=tags/1.0.357"
 
-  load_balancer_id = module.chd_external_alb.this_lb_id
-  target_group_ids = module.chd_external_alb.target_group_arns
+  alb_arn_suffix            = module.chd_external_alb.lb_arn_suffix
+  target_group_arn_suffixes = module.chd_external_alb.target_group_arn_suffixes
 
-  depends_on = [module.chd_external_alb]
+  prefix                    = "chd-external-"
+  response_time_threshold   = "100"
+  evaluation_periods        = "3"
+  statistic_period          = "60"
+  maximum_4xx_threshold     = "2"
+  maximum_5xx_threshold     = "2"
+  unhealthy_hosts_threshold = "1"
+
+  actions_alarm = var.enable_sns_topic ? [module.cloudwatch_sns_notifications[0].sns_topic_arn] : []
+  actions_ok    = var.enable_sns_topic ? [module.cloudwatch_sns_notifications[0].sns_topic_arn] : []
 }

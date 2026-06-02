@@ -35,7 +35,11 @@ variable "environment" {
   description = "The name of the environment"
 }
 
-
+variable "enable_sns_topic" {
+  type        = bool
+  description = "A boolean value to alter deployment of an SNS topic for CloudWatch actions"
+  default     = false
+}
 # ------------------------------------------------------------------------------
 # CHD Common Variables
 # ------------------------------------------------------------------------------

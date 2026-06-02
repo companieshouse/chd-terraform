@@ -1,9 +1,9 @@
-data "aws_network_interface" "nlb_fe_internal" {
-  for_each = data.aws_subnet_ids.web.ids
+data "aws_network_interface" "nlb_fe_external" {
+  for_each = toset(data.aws_subnets.public.ids)
 
   filter {
     name   = "description"
-    values = ["ELB ${module.nlb_fe_internal.this_lb_arn_suffix}"]
+    values = ["ELB ${module.nlb_fe_external.lb_arn_suffix}"]
   }
 
   filter {
@@ -12,17 +12,17 @@ data "aws_network_interface" "nlb_fe_internal" {
   }
 }
 
-module "nlb_fe_internal" {
+module "nlb_fe_external" {
   source  = "terraform-aws-modules/alb/aws"
-  version = "~> 5.0"
+  version = "6.7.0"
 
-  name                       = "nlb-${var.application}-fe-internal-001"
+  name                       = "nlb-${var.application}-fe-external-001"
   vpc_id                     = data.aws_vpc.vpc.id
-  internal                   = true
+  internal                   = false
   load_balancer_type         = "network"
   enable_deletion_protection = true
 
-  subnets                    = data.aws_subnet_ids.web.ids
+  subnets = data.aws_subnets.public.ids
 
   http_tcp_listeners = concat([
     {
@@ -40,19 +40,19 @@ module "nlb_fe_internal" {
       protocol           = "TCP"
       target_group_index = 2
     }
-  ],
-  local.chd_fe_ftp_int_passive_listeners)
+    ],
+  local.chd_fe_ftp_ext_passive_listeners)
 
   target_groups = concat([
     {
-      name                 = "tg-${var.application}-fe-internal-alb-001"
-      backend_protocol     = "TCP"
-      backend_port         = 80
-      target_type          = "alb"
+      name             = "tg-${var.application}-fe-external-alb-001"
+      backend_protocol = "TCP"
+      backend_port     = 80
+      target_type      = "alb"
       targets = [
         {
-          target_id        = module.chd_internal_alb.this_lb_arn
-          port             = 80
+          target_id = module.chd_external_alb.lb_arn
+          port      = 80
         }
       ]
       health_check = {
@@ -68,14 +68,14 @@ module "nlb_fe_internal" {
       }
     },
     {
-      name                 = "tg-${var.application}-fe-internal-alb-002"
-      backend_protocol     = "TCP"
-      backend_port         = 443
-      target_type          = "alb"
+      name             = "tg-${var.application}-fe-external-alb-002"
+      backend_protocol = "TCP"
+      backend_port     = 443
+      target_type      = "alb"
       targets = [
         {
-          target_id        = module.chd_internal_alb.this_lb_arn
-          port             = 443
+          target_id = module.chd_external_alb.lb_arn
+          port      = 443
         }
       ]
       health_check = {
@@ -91,15 +91,15 @@ module "nlb_fe_internal" {
       }
     },
     {
-      name                 = "tg-${var.application}-fe-internal-ftp-001"
+      name                 = "tg-${var.application}-fe-external-ftp-001"
       backend_protocol     = "TCP"
-      backend_port         = 21
+      backend_port         = 2121
       target_type          = "instance"
       deregistration_delay = 10
       health_check = {
         enabled             = true
         interval            = 30
-        port                = 21
+        port                = 2121
         healthy_threshold   = 3
         unhealthy_threshold = 3
         protocol            = "TCP"
@@ -107,14 +107,15 @@ module "nlb_fe_internal" {
       tags = {
         InstanceTargetGroupTag = var.application
       }
-    }
+    },
   ],
-  local.chd_fe_internal_ftp_passive_tgs)
+  local.chd_fe_external_ftp_passive_tgs)
 
   tags = merge(
     local.default_tags,
-    map(
-      "ServiceTeam", "${upper(var.application)}-FE-Support"
-    )
+    {
+      "Name"        = "nlb-${var.application}-fe-external-001"
+      "ServiceTeam" = "${upper(var.application)}-FE-Support"
+    }
   )
 }

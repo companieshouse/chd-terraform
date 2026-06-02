@@ -7,6 +7,7 @@ resource "aws_ssm_parameter" "parameters" {
   key_id = local.account_ssm_key_arn
 
   tags = {
+    "Name"        = "${local.parameter_store_path_prefix}/${each.key}"
     Environment = var.environment
     Application = var.application
   }
