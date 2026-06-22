@@ -6,32 +6,48 @@ data "aws_vpc" "vpc" {
   }
 }
 
-data "aws_subnet_ids" "public" {
-  vpc_id = data.aws_vpc.vpc.id
+data "aws_subnets" "public" {
+
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.vpc.id]
+  }
   filter {
     name   = "tag:Name"
     values = ["sub-public-*"]
   }
 }
 
-data "aws_subnet_ids" "web" {
-  vpc_id = data.aws_vpc.vpc.id
+data "aws_subnets" "web" {
+
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.vpc.id]
+  }
   filter {
     name   = "tag:Name"
     values = ["sub-web-*"]
   }
 }
 
-data "aws_subnet_ids" "data" {
-  vpc_id = data.aws_vpc.vpc.id
+data "aws_subnets" "data" {
+
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.vpc.id]
+  }
   filter {
     name   = "tag:Name"
     values = ["sub-data-*"]
   }
 }
 
-data "aws_subnet_ids" "application" {
-  vpc_id = data.aws_vpc.vpc.id
+data "aws_subnets" "application" {
+
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.vpc.id]
+  }
   filter {
     name   = "tag:Name"
     values = ["sub-application-*"]
@@ -129,7 +145,7 @@ data "aws_ami" "chd_fe_ami" {
 # CHD Frontend Data
 # ------------------------------------------------------------------------------
 data "aws_security_group" "identity_gateway" {
-  name  = "identity-gateway-instance"
+  name = "identity-gateway-instance"
 }
 
 data "vault_generic_secret" "chd_fe_data" {
@@ -140,16 +156,16 @@ data "template_file" "fe_userdata" {
   template = file("${path.module}/templates/fe_user_data.tpl")
 
   vars = {
-    REGION                    = var.aws_region
-    HERITAGE_ENVIRONMENT      = title(var.environment)
-    APP_VERSION               = var.fe_app_release_version
-    CHD_FRONTEND_INPUTS_PATH  = "${local.parameter_store_path_prefix}/frontend_inputs"
-    ANSIBLE_INPUTS_PATH       = "${local.parameter_store_path_prefix}/frontend_ansible_inputs"
-    ONLINE_MOUNT_PATH         = var.fe_online_mount_path
+    REGION                   = var.aws_region
+    HERITAGE_ENVIRONMENT     = title(var.environment)
+    APP_VERSION              = var.fe_app_release_version
+    CHD_FRONTEND_INPUTS_PATH = "${local.parameter_store_path_prefix}/frontend_inputs"
+    ANSIBLE_INPUTS_PATH      = "${local.parameter_store_path_prefix}/frontend_ansible_inputs"
+    ONLINE_MOUNT_PATH        = var.fe_online_mount_path
   }
 }
 
-data "template_cloudinit_config" "fe_userdata_config" {
+data "cloudinit_config" "fe_userdata_config" {
   gzip          = true
   base64_encode = true
 
@@ -158,10 +174,10 @@ data "template_cloudinit_config" "fe_userdata_config" {
     content = templatefile("${path.module}/templates/fe_ftp_server.tpl", {
       int_passive_ports_start = var.fe_ftp_int_passive_ports_start
       int_passive_ports_end   = var.fe_ftp_int_passive_ports_end
-      internal_nlb_name       = module.nlb_fe_internal.this_lb_dns_name
+      internal_nlb_name       = module.nlb_fe_internal.lb_dns_name
       ext_passive_ports_start = var.fe_ftp_ext_passive_ports_start
       ext_passive_ports_end   = var.fe_ftp_ext_passive_ports_end
-      external_nlb_name       = module.nlb_fe_external.this_lb_dns_name
+      external_nlb_name       = module.nlb_fe_external.lb_dns_name
       root_dir                = var.fe_ftp_root_dir
     })
   }
@@ -211,7 +227,7 @@ data "template_file" "bep_userdata" {
   }
 }
 
-data "template_cloudinit_config" "bep_userdata_config" {
+data "cloudinit_config" "bep_userdata_config" {
   gzip          = true
   base64_encode = true
 

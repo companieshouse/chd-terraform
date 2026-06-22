@@ -4,8 +4,8 @@ resource "aws_route53_record" "nlb_backend" {
   type    = "A"
 
   alias {
-    name                   = module.backend_nlb.this_lb_dns_name
-    zone_id                = module.backend_nlb.this_lb_zone_id
+    name                   = module.backend_nlb.lb_dns_name
+    zone_id                = module.backend_nlb.lb_zone_id
     evaluate_target_health = true
   }
 }
@@ -16,8 +16,8 @@ resource "aws_route53_record" "chd_frontend_internal" {
   type    = "A"
 
   alias {
-    name                   = module.nlb_fe_internal.this_lb_dns_name
-    zone_id                = module.nlb_fe_internal.this_lb_zone_id
+    name                   = module.nlb_fe_internal.lb_dns_name
+    zone_id                = module.nlb_fe_internal.lb_zone_id
     evaluate_target_health = true
   }
 }
