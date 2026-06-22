@@ -120,6 +120,8 @@ module "bep_asg" {
     local.default_tags,
     map(
       "ServiceTeam", "${upper(var.application)}-BEP-Support"
+      "tenable-cwp-scan-disabled", "true"
+      "Repository", "chd-terraform"
     )
   )
 }

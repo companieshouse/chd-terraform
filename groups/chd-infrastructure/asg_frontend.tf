@@ -186,6 +186,8 @@ module "fe_asg" {
     local.default_tags,
     map(
       "ServiceTeam", "${upper(var.application)}-FE-Support"
+      "tenable-cwp-scan-disabled", "true"
+      "Repository", "chd-terraform"
     )
   )
 
