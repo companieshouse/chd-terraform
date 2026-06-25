@@ -121,10 +121,8 @@ module "bep_asg" {
   tags_as_map = merge(
     local.default_tags,
     {
-      "Name"                      = "${var.application}-bep-asg"
-      "ServiceTeam"               = "${upper(var.application)}-BEP-Support"      
-      "tenable-cwp-scan-disabled" = "true"
-      "Repository"                = "chd-terraform"
+      "Name"        = "${var.application}-bep-asg"
+      "ServiceTeam" = "${upper(var.application)}-BEP-Support"
     }
   )
 }
