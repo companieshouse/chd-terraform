@@ -155,6 +155,12 @@ variable "bep_cw_logs" {
 # ------------------------------------------------------------------------------
 # CHD FE Variables
 # ------------------------------------------------------------------------------
+variable "alb_ssl_policy" {
+  type        = string
+  description = "The SSL policy to apply to the ALB HTTPS listeners"
+  default     = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+}
+
 variable "fe_ami_name" {
   type        = string
   default     = "chd-*"
@@ -287,3 +293,6 @@ variable "bep_mount_finance_nfs_share" {
   description = "Defines whether the finance share should be mounted"
   type        = bool
 }
+
+
+
