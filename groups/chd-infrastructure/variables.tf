@@ -293,6 +293,3 @@ variable "bep_mount_finance_nfs_share" {
   description = "Defines whether the finance share should be mounted"
   type        = bool
 }
-
-
-
