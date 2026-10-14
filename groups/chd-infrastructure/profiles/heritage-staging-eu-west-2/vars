@@ -134,7 +134,6 @@ nfs_server = "192.168.255.24"
 nfs_finance_server = "cvodata.staging.finance.aws.internal"
 
 nfs_mount_destination_parent_dir = "/-"
-nfs_finance_mount_destination_parent_dir = "/finance_staging_e5fs/data/"
 
 nfs_mounts = {
   # CVO Mounts
