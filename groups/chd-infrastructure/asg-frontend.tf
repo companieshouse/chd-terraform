@@ -187,8 +187,10 @@ module "fe_asg" {
   tags_as_map = merge(
     local.default_tags,
     {
-      "Name"        = "${var.application}-fe-asg"
-      "ServiceTeam" = "${upper(var.application)}-FE-Support"
+      "Name"                      = "${var.application}-fe-asg"
+      "ServiceTeam"               = "${upper(var.application)}-FE-Support"
+      "tenable-cwp-scan-disabled" = "true"
+      "Repository"                = "chd-terraform"
     }
   )
 
