@@ -86,6 +86,7 @@ module "chd_bep_profile" {
       }
     ],
     local.bep_s3_read_buckets_iam_statement,
-    local.bep_s3_write_buckets_iam_statement
+    local.bep_s3_write_buckets_iam_statement,
+    local.bep_s3_delete_object_buckets_iam_statement
   )
 }
