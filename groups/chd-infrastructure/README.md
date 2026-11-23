@@ -2,25 +2,25 @@
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0, < 2.0.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.0.0, < 6.0.0 |
 | <a name="requirement_cloudinit"></a> [cloudinit](#requirement\_cloudinit) | >= 2.0, < 3.0 |
-| <a name="requirement_vault"></a> [vault](#requirement\_vault) | >= 4.0, < 5.0 |
+| <a name="requirement_vault"></a> [vault](#requirement\_vault) | >= 5.0, < 6.0 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.0.0, < 6.0.0 |
 | <a name="provider_cloudinit"></a> [cloudinit](#provider\_cloudinit) | >= 2.0, < 3.0 |
 | <a name="provider_template"></a> [template](#provider\_template) | n/a |
-| <a name="provider_vault"></a> [vault](#provider\_vault) | >= 4.0, < 5.0 |
+| <a name="provider_vault"></a> [vault](#provider\_vault) | >= 5.0, < 6.0 |
 
 ## Modules
 
 | Name | Source | Version |
-|------|--------|---------|
+| ---- | ------ | ------- |
 | <a name="module_backend_nlb"></a> [backend\_nlb](#module\_backend\_nlb) | terraform-aws-modules/alb/aws | 6.7.0 |
 | <a name="module_bep_asg"></a> [bep\_asg](#module\_bep\_asg) | git@github.com:companieshouse/terraform-modules//aws/terraform-aws-autoscaling | tags/1.0.360 |
 | <a name="module_chd_bep_asg_security_group"></a> [chd\_bep\_asg\_security\_group](#module\_chd\_bep\_asg\_security\_group) | terraform-aws-modules/security-group/aws | 5.3.1 |
@@ -31,7 +31,7 @@
 | <a name="module_chd_fe_profile"></a> [chd\_fe\_profile](#module\_chd\_fe\_profile) | git@github.com:companieshouse/terraform-modules//aws/instance_profile | tags/1.0.360 |
 | <a name="module_chd_internal_alb"></a> [chd\_internal\_alb](#module\_chd\_internal\_alb) | terraform-aws-modules/alb/aws | 6.7.0 |
 | <a name="module_chd_internal_alb_security_group"></a> [chd\_internal\_alb\_security\_group](#module\_chd\_internal\_alb\_security\_group) | terraform-aws-modules/security-group/aws | 5.3.1 |
-| <a name="module_cloudwatch_sns_notifications"></a> [cloudwatch\_sns\_notifications](#module\_cloudwatch\_sns\_notifications) | terraform-aws-modules/sns/aws | 6.2.1 |
+| <a name="module_cloudwatch_sns_notifications"></a> [cloudwatch\_sns\_notifications](#module\_cloudwatch\_sns\_notifications) | terraform-aws-modules/sns/aws | 3.3.0 |
 | <a name="module_external_alb_alarms"></a> [external\_alb\_alarms](#module\_external\_alb\_alarms) | git@github.com:companieshouse/terraform-modules//aws/alb-cloudwatch-alarms | tags/1.0.357 |
 | <a name="module_fe_asg"></a> [fe\_asg](#module\_fe\_asg) | git@github.com:companieshouse/terraform-modules//aws/terraform-aws-autoscaling | tags/1.0.360 |
 | <a name="module_internal_alb_alarms"></a> [internal\_alb\_alarms](#module\_internal\_alb\_alarms) | git@github.com:companieshouse/terraform-modules//aws/alb-cloudwatch-alarms | tags/1.0.357 |
@@ -41,7 +41,7 @@
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [aws_autoscaling_schedule.bep-schedule-start](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_schedule) | resource |
 | [aws_autoscaling_schedule.bep-schedule-stop](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_schedule) | resource |
 | [aws_autoscaling_schedule.fe-schedule-start](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_schedule) | resource |
@@ -87,7 +87,7 @@
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_account"></a> [account](#input\_account) | Short version of the name of the AWS Account in which resources will be administered | `string` | n/a | yes |
 | <a name="input_application"></a> [application](#input\_application) | The name of the application | `string` | n/a | yes |
 | <a name="input_aws_account"></a> [aws\_account](#input\_aws\_account) | The name of the AWS Account in which resources will be administered | `string` | n/a | yes |
@@ -140,7 +140,7 @@
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_chd_bep_address_internal"></a> [chd\_bep\_address\_internal](#output\_chd\_bep\_address\_internal) | n/a |
 | <a name="output_chd_frontend_address_internal"></a> [chd\_frontend\_address\_internal](#output\_chd\_frontend\_address\_internal) | n/a |
 <!-- END_TF_DOCS -->

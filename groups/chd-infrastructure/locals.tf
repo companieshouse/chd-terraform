@@ -209,4 +209,22 @@ locals {
       ]
     }
   ] : []
+
+  bep_s3_delete_object_buckets = jsondecode(local.chd_ec2_data["bep-s3-delete-object-buckets"])
+  bep_s3_delete_object_buckets_arn_list = length(local.bep_s3_delete_object_buckets) > 0 ? flatten([
+    for bucket in local.bep_s3_delete_object_buckets : [
+      "arn:aws:s3:::${bucket}/*"
+    ]
+  ]) : []
+
+  bep_s3_delete_object_buckets_iam_statement = length(local.bep_s3_delete_object_buckets_arn_list) > 0 ? [
+    {
+      sid       = "AllowS3DeleteObjectAccess",
+      effect    = "Allow",
+      resources = local.bep_s3_delete_object_buckets_arn_list,
+      actions = [
+        "s3:DeleteObject"
+      ]
+    }
+  ] : []
 }
