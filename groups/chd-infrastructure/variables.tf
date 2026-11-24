@@ -77,8 +77,12 @@ variable "nfs_mounts" {
     ```
     nfs_mounts = {
       image = {
-        local_mount_point = "image"
+        local_mount_point = "/mnt/img"
         mount_options     = ["rw", "hard"]
+      }
+      batch = {
+        local_mount_point = "/mnt/batch"
+        applies_to        = ["backend"]
       }
     }
     ```
