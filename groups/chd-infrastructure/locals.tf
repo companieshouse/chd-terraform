@@ -58,7 +58,11 @@ locals {
 
   fe_nfs_mounts = {
     for share, config in var.nfs_mounts :
-    share => config if contains(config.applies_to, "frontend")
+    share => merge({},
+      config.local_mount_point != null ? { local_mount_point = config.local_mount_point } : {},
+      config.mount_options != null ? { mount_options = config.mount_options } : {}
+    )
+    if contains(config.applies_to, "frontend")
   }
 
   # Generate listener configuration for FTP passive ports
@@ -143,7 +147,11 @@ locals {
 
   bep_nfs_mounts = {
     for share, config in var.nfs_mounts :
-    share => config if contains(config.applies_to, "backend")
+    share => merge({},
+      config.local_mount_point != null ? { local_mount_point = config.local_mount_point } : {},
+      config.mount_options != null ? { mount_options = config.mount_options } : {}
+    )
+    if contains(config.applies_to, "backend")
   }
 
   chd_bep_ansible_inputs = {
