@@ -75,7 +75,7 @@ variable "nfs_mounts" {
     Example:
 
     ```
-    nfs_mounts_frontend = {
+    nfs_mounts = {
       image = {
         local_mount_point = "image"
         mount_options     = ["rw", "hard"]
