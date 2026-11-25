@@ -56,6 +56,15 @@ locals {
     }
   ] : []
 
+  fe_nfs_mounts = {
+    for share, config in var.nfs_mounts :
+    share => merge({},
+      config.local_mount_point != null ? { local_mount_point = config.local_mount_point } : {},
+      config.mount_options != null ? { mount_options = config.mount_options } : {}
+    )
+    if contains(config.applies_to, "frontend")
+  }
+
   # Generate listener configuration for FTP passive ports
   chd_fe_ftp_int_passive_listeners = [
     for num in range(var.fe_ftp_int_passive_ports_start, var.fe_ftp_int_passive_ports_end + 1) : {
@@ -122,7 +131,7 @@ locals {
     version                    = var.fe_app_release_version
     default_nfs_server_address = var.nfs_server
     mounts_parent_dir          = var.nfs_mount_destination_parent_dir
-    mounts                     = var.nfs_mounts
+    mounts                     = local.fe_nfs_mounts
     region                     = var.aws_region
     cw_log_files               = local.fe_cw_logs
     cw_agent_user              = "root"
@@ -136,6 +145,15 @@ locals {
   bep_cw_logs    = { for log, map in var.bep_cw_logs : log => merge(map, { "log_group_name" = "${var.application}-bep-${log}" }) }
   bep_log_groups = compact([for log, map in local.bep_cw_logs : lookup(map, "log_group_name", "")])
 
+  bep_nfs_mounts = {
+    for share, config in var.nfs_mounts :
+    share => merge({},
+      config.local_mount_point != null ? { local_mount_point = config.local_mount_point } : {},
+      config.mount_options != null ? { mount_options = config.mount_options } : {}
+    )
+    if contains(config.applies_to, "backend")
+  }
+
   chd_bep_ansible_inputs = {
     s3_bucket_releases         = local.s3_releases["release_bucket_name"]
     s3_bucket_configs          = local.s3_releases["config_bucket_name"]
@@ -144,7 +162,7 @@ locals {
     default_nfs_server_address = var.nfs_server
     finance_nfs_server_address = var.nfs_finance_server
     mounts_parent_dir          = var.nfs_mount_destination_parent_dir
-    mounts                     = var.nfs_mounts
+    mounts                     = local.bep_nfs_mounts
     finance_mounts             = var.nfs_finance_mounts
     region                     = var.aws_region
     cw_log_files               = local.bep_cw_logs

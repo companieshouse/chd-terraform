@@ -67,16 +67,46 @@ variable "nfs_mount_destination_parent_dir" {
 }
 
 variable "nfs_mounts" {
-  type        = map(any)
-  description = "A map of objects which contains mount details for each mount path required."
-  default = {
-    SH_NFSTest = {                  # The name of the NFS Share from the NFS Server
-      local_mount_point = "folder", # The name of the local folder to mount to if the share name is not wanted
-      mount_options = [             # Traditional mount options as documented for any NFS Share mounts
-        "rw",
-        "wsize=8192"
-      ]
+  description = <<-EOT
+    A map of NFS share definitions.
+
+    The map key represents the name of the NFS share exported by the NFS server.
+
+    Example:
+
+    ```
+    nfs_mounts = {
+      image = {
+        local_mount_point = "/mnt/img"
+        mount_options     = ["rw", "hard"]
+      }
+      batch = {
+        local_mount_point = "/mnt/batch"
+        applies_to        = ["backend"]
+      }
     }
+    ```
+
+    Attributes:
+      `local_mount_point` - Local directory name to mount the share to. If omitted, the share name is used.
+      `mount_options`     - List of NFS mount options such as rw, hard, and wsize=8192.
+      `applies_to`        - Set of instance types to which the NFS mount applies. If omitted, the mount applies to both `frontend` and `backend` instances.
+  EOT
+
+  type = map(object({
+    local_mount_point = optional(string)
+    mount_options     = optional(list(string))
+    applies_to        = optional(set(string), ["frontend", "backend"])
+  }))
+
+  validation {
+    condition = alltrue(flatten([
+      for _, mount in var.nfs_mounts : [
+        for target in mount.applies_to :
+        contains(["frontend", "backend"], target)
+      ]
+    ]))
+    error_message = "applies_to may only contain 'frontend' and/or 'backend'."
   }
 }
 
